@@ -1,0 +1,2457 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>João Chociai — Portfólio Full-Stack · Fintech &amp; Cloud</title>
+    <meta name="description" content="Dois sistemas enterprise construídos do zero para uma grande instituição de educação médica: uma plataforma de gestão financeira e recuperação de crédito, e uma plataforma de operações de Customer Experience. Firebase, BigQuery e integrações com CRM, mensageria e gateways de pagamento.">
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ── TOKENS ─────────────────────────────────────────────────── */
+        :root {
+            --dark:        #0a0f1e;
+            --dark-2:      #0f172a;
+            --dark-3:      #1e293b;
+            --blue:        #2563eb;
+            --blue-deep:   #1d4ed8;
+            --blue-soft:   #3b82f6;
+            --blue-tint:   #eff6ff;
+            --violet:      #7c3aed;
+            --violet-deep: #6d28d9;
+            --violet-soft: #8b5cf6;
+            --violet-tint: #f5f3ff;
+            --green:       #10b981;
+            --green-tint:  #ecfdf5;
+            --amber:       #f59e0b;
+            --amber-tint:  #fffbeb;
+            --red:         #ef4444;
+            --text:        #1e293b;
+            --text-2:      #64748b;
+            --text-3:      #94a3b8;
+            --bg:          #f8fafc;
+            --white:       #ffffff;
+            --border:      #e2e8f0;
+            --shadow-xs:   0 1px 2px rgba(0,0,0,.06);
+            --shadow-sm:   0 1px 3px rgba(0,0,0,.08);
+            --shadow-md:   0 4px 20px -2px rgba(0,0,0,.1);
+            --shadow-lg:   0 20px 40px -8px rgba(0,0,0,.16);
+            --r:           16px;
+            --r-sm:        10px;
+            --ease:        cubic-bezier(0.4,0,0.2,1);
+            --mono:        'JetBrains Mono', monospace;
+        }
+
+        /* ── RESET ──────────────────────────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ── PROGRESS BAR ───────────────────────────────────────────── */
+        #progress-bar {
+            position: fixed; top: 0; left: 0;
+            width: 0%; height: 3px;
+            background: linear-gradient(90deg, var(--blue), var(--violet));
+            z-index: 9999; transition: width .08s linear;
+        }
+
+        /* ── NAV ────────────────────────────────────────────────────── */
+        nav {
+            position: fixed; top: 3px; left: 0; right: 0;
+            z-index: 1000; padding: 1.2rem 2rem;
+            transition: background .3s var(--ease), padding .3s var(--ease), box-shadow .3s var(--ease);
+        }
+        nav.scrolled {
+            background: rgba(10,15,30,.96);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            padding: .8rem 2rem;
+            box-shadow: 0 1px 0 rgba(255,255,255,.06);
+        }
+        .nav-inner {
+            max-width: 1140px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-logo {
+            color: #fff; font-weight: 700; font-size: .95rem;
+            text-decoration: none; letter-spacing: -.2px;
+            display: flex; align-items: center; gap: .5rem;
+        }
+        .nav-logo .dot-blue { width: 8px; height: 8px; background: var(--blue-soft); border-radius: 50%; }
+        .nav-logo .dot-violet { width: 8px; height: 8px; background: var(--violet-soft); border-radius: 50%; }
+        .nav-links { display: flex; list-style: none; gap: 1.75rem; align-items: center; }
+        .nav-links a {
+            color: var(--text-3); text-decoration: none;
+            font-size: .875rem; font-weight: 500; transition: color .2s;
+        }
+        .nav-links a:hover { color: #fff; }
+        .nav-right { display: flex; align-items: center; gap: 1.5rem; }
+        .lang-switch {
+            display: inline-flex; flex-shrink: 0;
+            border: 1px solid rgba(255,255,255,.18);
+            border-radius: 50px; overflow: hidden;
+        }
+        .lang-switch button {
+            background: transparent; border: none; cursor: pointer;
+            color: var(--text-3); font-family: inherit;
+            font-size: .72rem; font-weight: 700; letter-spacing: .5px;
+            padding: .35rem .7rem; transition: background .2s, color .2s;
+        }
+        .lang-switch button.active { background: var(--blue); color: #fff; }
+        .lang-switch button:not(.active):hover { color: #fff; }
+        .nav-cta {
+            background: var(--blue) !important; color: #fff !important;
+            padding: .45rem 1.1rem !important; border-radius: 50px;
+            font-weight: 600 !important;
+            transition: background .2s, transform .2s !important;
+        }
+        .nav-cta:hover { background: var(--blue-deep) !important; transform: translateY(-1px); }
+
+        /* ── HERO ───────────────────────────────────────────────────── */
+        .hero {
+            min-height: 100vh;
+            background: var(--dark);
+            background-image:
+                radial-gradient(ellipse 70% 50% at 25% 30%, rgba(37,99,235,.25) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 50% at 80% 70%, rgba(124,58,237,.2) 0%, transparent 60%);
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; padding: 9rem 2rem 7rem;
+            position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px);
+            background-size: 64px 64px;
+            mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 25%, transparent 100%);
+        }
+        .hero-content { position: relative; z-index: 1; max-width: 900px; }
+        .hero-eyebrow {
+            display: flex; align-items: center; justify-content: center;
+            gap: .65rem; margin-bottom: 2rem; flex-wrap: wrap;
+        }
+        .hero-chip {
+            display: inline-flex; align-items: center; gap: .45rem;
+            padding: .35rem .9rem; border-radius: 50px;
+            font-size: .72rem; font-weight: 700; letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .chip-blue {
+            background: rgba(37,99,235,.14);
+            border: 1px solid rgba(37,99,235,.35);
+            color: #93c5fd;
+        }
+        .chip-violet {
+            background: rgba(124,58,237,.14);
+            border: 1px solid rgba(124,58,237,.35);
+            color: #c4b5fd;
+        }
+        .chip-blue::before, .chip-violet::before {
+            content: ''; width: 6px; height: 6px; border-radius: 50%;
+            animation: pulse-dot 2s infinite;
+        }
+        .chip-blue::before { background: #93c5fd; }
+        .chip-violet::before { background: #c4b5fd; animation-delay: .5s; }
+        @keyframes pulse-dot {
+            0%,100% { opacity:1; transform:scale(1); }
+            50%      { opacity:.3; transform:scale(.75); }
+        }
+        .hero h1 {
+            font-size: clamp(2rem, 6vw, 4.2rem);
+            font-weight: 900; color: #fff;
+            line-height: 1.08; letter-spacing: -2.5px;
+            margin-bottom: 1.5rem;
+        }
+        .hero h1 em {
+            font-style: normal;
+            background: linear-gradient(135deg, #60a5fa 20%, #a78bfa 80%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-sub {
+            font-size: 1.08rem; color: var(--text-3);
+            max-width: 640px; margin: 0 auto 2.75rem;
+            line-height: 1.8;
+        }
+        .hero-systems {
+            display: flex; gap: 1rem;
+            justify-content: center; flex-wrap: wrap;
+            margin-bottom: 2.5rem;
+        }
+        .hero-system-badge {
+            display: inline-flex; align-items: center; gap: .5rem;
+            background: rgba(255,255,255,.05);
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 12px; padding: .65rem 1.25rem;
+            font-size: .83rem; font-weight: 600; color: #cbd5e1;
+            transition: all .2s;
+        }
+        .hero-system-badge:hover { background: rgba(255,255,255,.09); border-color: rgba(255,255,255,.2); }
+        .hero-system-badge .badge-dot {
+            width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+        }
+        .hero-actions {
+            display: flex; gap: 1rem;
+            justify-content: center; flex-wrap: wrap;
+        }
+        .btn-primary {
+            background: var(--blue); color: #fff;
+            padding: .875rem 2rem; border-radius: 50px;
+            text-decoration: none; font-weight: 600; font-size: .9rem;
+            transition: background .2s, transform .2s, box-shadow .2s;
+            box-shadow: 0 4px 20px rgba(37,99,235,.4);
+        }
+        .btn-primary:hover { background: var(--blue-deep); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(37,99,235,.5); }
+        .btn-violet {
+            background: var(--violet); color: #fff;
+            padding: .875rem 2rem; border-radius: 50px;
+            text-decoration: none; font-weight: 600; font-size: .9rem;
+            transition: background .2s, transform .2s, box-shadow .2s;
+            box-shadow: 0 4px 20px rgba(124,58,237,.35);
+        }
+        .btn-violet:hover { background: var(--violet-deep); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(124,58,237,.45); }
+        .btn-ghost {
+            background: transparent; color: var(--text-3);
+            padding: .875rem 2rem; border-radius: 50px;
+            text-decoration: none; font-weight: 500; font-size: .9rem;
+            border: 1px solid rgba(255,255,255,.14);
+            transition: all .2s;
+        }
+        .btn-ghost:hover { color: #fff; border-color: rgba(255,255,255,.3); background: rgba(255,255,255,.05); }
+        .scroll-hint {
+            position: absolute; bottom: 2.5rem; left: 50%;
+            transform: translateX(-50%);
+            color: #334155; font-size: .72rem;
+            display: flex; flex-direction: column; align-items: center; gap: .4rem;
+            animation: float 2.4s ease-in-out infinite; letter-spacing: .5px;
+        }
+        .scroll-hint svg { width: 18px; height: 18px; }
+        @keyframes float {
+            0%,100% { transform: translateX(-50%) translateY(0); }
+            50%      { transform: translateX(-50%) translateY(7px); }
+        }
+
+        /* ── LAYOUT HELPERS ─────────────────────────────────────────── */
+        .container { max-width: 1140px; margin: 0 auto; padding: 0 2rem; }
+        .section-label {
+            display: inline-flex; align-items: center; gap: .5rem;
+            font-size: .7rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1.5px;
+            margin-bottom: .55rem;
+        }
+        .section-label::before {
+            content: '';
+            display: inline-block; width: 16px; height: 2px; border-radius: 2px;
+        }
+        .label-blue { color: var(--blue); }
+        .label-blue::before { background: var(--blue); }
+        .label-violet { color: var(--violet); }
+        .label-violet::before { background: var(--violet); }
+        .label-light { color: #93c5fd; }
+        .label-light::before { background: #93c5fd; }
+        .label-violet-light { color: #c4b5fd; }
+        .label-violet-light::before { background: #c4b5fd; }
+        .section-header { text-align: center; margin-bottom: 3rem; }
+        .section-header h2 {
+            font-size: 1.9rem; font-weight: 800;
+            letter-spacing: -.75px; margin-bottom: .4rem;
+        }
+        .section-header p { color: var(--text-2); font-size: .93rem; }
+
+        /* ── SYSTEM HEADERS ─────────────────────────────────────────── */
+        .system-header {
+            padding: 5rem 0 3rem;
+        }
+        .system-header-inner {
+            display: flex; align-items: center; gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .system-number {
+            font-family: var(--mono); font-size: 5rem; font-weight: 700;
+            line-height: 1; letter-spacing: -3px;
+            -webkit-text-stroke: 2px;
+            flex-shrink: 0;
+        }
+        .system-number.blue { color: transparent; -webkit-text-stroke-color: rgba(37,99,235,.25); }
+        .system-number.violet { color: transparent; -webkit-text-stroke-color: rgba(124,58,237,.25); }
+        .system-header-text { flex: 1; min-width: 280px; }
+        .system-header-text h2 {
+            font-size: clamp(1.6rem, 3vw, 2.4rem);
+            font-weight: 800; letter-spacing: -1px;
+            margin-bottom: .5rem; line-height: 1.15;
+        }
+        .system-header-text p { color: var(--text-2); font-size: .95rem; line-height: 1.7; max-width: 580px; }
+        .system-meta {
+            display: flex; gap: .65rem; flex-wrap: wrap; margin-top: 1rem;
+        }
+        .meta-pill {
+            display: inline-flex; align-items: center; gap: .4rem;
+            background: var(--bg); border: 1px solid var(--border);
+            border-radius: 50px; padding: .3rem .8rem;
+            font-size: .75rem; font-weight: 600; color: var(--text-2);
+            font-family: var(--mono);
+        }
+        .meta-pill .dot { width: 6px; height: 6px; border-radius: 50%; }
+
+        /* ── STATS ──────────────────────────────────────────────────── */
+        .stats-section {
+            padding: 4.5rem 0;
+            background: var(--dark-2);
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+        }
+        .stat-card {
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: var(--r); padding: 1.75rem 1.5rem;
+            text-align: center; position: relative; overflow: hidden;
+            transition: transform .25s var(--ease), border-color .25s;
+        }
+        .stat-card::after {
+            content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+            height: 2px;
+        }
+        .stat-card.blue-accent::after { background: linear-gradient(90deg, var(--blue), var(--blue-soft)); }
+        .stat-card.violet-accent::after { background: linear-gradient(90deg, var(--violet), var(--violet-soft)); }
+        .stat-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,.15); }
+        .stat-icon {
+            font-size: 1.5rem; margin-bottom: .75rem;
+            display: block;
+        }
+        .stat-value {
+            font-size: 2.5rem; font-weight: 800;
+            letter-spacing: -1.5px; line-height: 1;
+            margin-bottom: .35rem;
+        }
+        .stat-value.blue { color: var(--blue-soft); }
+        .stat-value.violet { color: var(--violet-soft); }
+        .stat-label { font-size: .875rem; font-weight: 600; color: #e2e8f0; margin-bottom: .2rem; }
+        .stat-sub { font-size: .75rem; color: #64748b; }
+
+        /* ── MODULE CARDS (with screenshots) ───────────────────────── */
+        .modules-section { padding: 2rem 0 5rem; }
+        .module-card {
+            background: var(--white);
+            border-radius: var(--r); padding: 2.75rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-xs);
+            display: flex; align-items: flex-start; gap: 3rem;
+            transition: box-shadow .25s var(--ease), border-color .25s;
+        }
+        .module-card:hover { box-shadow: var(--shadow-md); }
+        .module-card:hover.blue-hover { border-color: #bfdbfe; }
+        .module-card:hover.violet-hover { border-color: #ddd6fe; }
+        .module-card.reverse { flex-direction: row-reverse; }
+        .module-info { flex: 1; min-width: 0; }
+        .module-tag {
+            display: inline-flex; align-items: center; gap: .4rem;
+            font-size: .7rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px;
+            padding: .28rem .75rem; border-radius: 50px;
+            margin-bottom: .9rem;
+        }
+        .tag-blue { color: var(--blue); background: var(--blue-tint); }
+        .tag-violet { color: var(--violet); background: var(--violet-tint); }
+        .module-info h3 {
+            font-size: 1.55rem; font-weight: 700; color: var(--text);
+            letter-spacing: -.5px; margin-bottom: .6rem; line-height: 1.25;
+        }
+        .module-info > p {
+            color: var(--text-2); margin-bottom: 1.4rem;
+            line-height: 1.75; font-size: .91rem;
+        }
+        .feature-list { list-style: none; display: flex; flex-direction: column; gap: .7rem; }
+        .feature-list li {
+            position: relative;
+            padding-left: 1.7rem;
+            font-size: .865rem; color: var(--text-2); line-height: 1.55;
+        }
+        .feature-list li::before {
+            content: ''; position: absolute;
+            left: 0; top: .2rem;
+            width: 17px; height: 17px;
+            border-radius: 50%; background-repeat: no-repeat; background-position: center;
+        }
+        .check-blue li::before {
+            background-color: var(--blue-tint);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+        }
+        .check-violet li::before {
+            background-color: var(--violet-tint);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 24 24' fill='none' stroke='%237c3aed' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+        }
+        .feature-list li strong { color: var(--text); font-weight: 600; }
+        .feature-list li code {
+            font-family: var(--mono); font-size: .73rem;
+            background: var(--bg); border: 1px solid var(--border);
+            padding: .08rem .32rem; border-radius: 4px; color: var(--blue);
+        }
+        .module-visual { flex: 1.3; min-width: 0; align-self: stretch; }
+        .flow-panel {
+            background: linear-gradient(160deg, #f8fafc 0%, #eef4ff 100%);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.75rem 1.6rem;
+            height: 100%;
+            box-shadow: var(--shadow-sm);
+            display: flex; flex-direction: column;
+        }
+        .flow-panel .vflow { margin-top: auto; margin-bottom: auto; }
+        .flow-panel-title {
+            display: flex; align-items: center; gap: .5rem;
+            font-size: .7rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px;
+            color: var(--text-2); margin-bottom: 1.5rem;
+        }
+        .flow-panel-title .fp-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--blue); }
+        .vflow { position: relative; }
+        .vflow::before {
+            content: ''; position: absolute;
+            left: 23px; top: 23px; bottom: 23px;
+            width: 2px;
+            background: linear-gradient(180deg, #93c5fd, #c4b5fd);
+        }
+        .vflow-step {
+            display: flex; align-items: center; gap: .9rem;
+            position: relative; z-index: 1;
+        }
+        .vflow-step + .vflow-step { margin-top: 1rem; }
+        .vflow-node {
+            width: 46px; height: 46px; min-width: 46px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.15rem;
+            background: #fff;
+            border: 1.5px solid #bfdbfe;
+            box-shadow: var(--shadow-xs);
+        }
+        .vflow-content { flex: 1; min-width: 0; }
+        .vflow-label { font-size: .88rem; font-weight: 600; color: var(--text); line-height: 1.3; }
+        .vflow-sub { font-size: .73rem; color: var(--text-2); font-family: var(--mono); margin-top: .1rem; }
+        .vflow-tag {
+            display: inline-block;
+            font-family: var(--mono); font-size: .66rem; font-weight: 600;
+            padding: .1rem .42rem; border-radius: 5px;
+            background: var(--blue-tint); color: var(--blue);
+            margin-bottom: .2rem;
+        }
+        .vflow-outcomes { display: flex; gap: .4rem; margin-top: .3rem; flex-wrap: wrap; }
+        .vflow-outcome {
+            font-size: .67rem; font-weight: 600;
+            padding: .15rem .55rem; border-radius: 50px; font-family: var(--mono);
+        }
+        .vo-win { background: var(--green-tint); color: #059669; }
+        .vo-lose { background: #fef2f2; color: #dc2626; }
+
+        /* ── MODULE MAP ─────────────────────────────────────────────── */
+        .modmap-section { padding: 1rem 0 5rem; }
+        .modmap-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+            gap: 1.25rem;
+        }
+        .modmap-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            padding: 1.6rem;
+            box-shadow: var(--shadow-xs);
+            transition: box-shadow .25s var(--ease), border-color .25s;
+        }
+        .modmap-card:hover { box-shadow: var(--shadow-md); border-color: #bfdbfe; }
+        .modmap-head {
+            display: flex; align-items: center; gap: .7rem;
+            margin-bottom: 1.1rem; padding-bottom: .9rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .modmap-head-icon {
+            width: 38px; height: 38px; min-width: 38px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.05rem;
+        }
+        .modmap-head-text { flex: 1; min-width: 0; }
+        .modmap-sector { font-size: .98rem; font-weight: 700; color: var(--text); line-height: 1.2; }
+        .modmap-count { font-size: .7rem; color: var(--text-2); font-family: var(--mono); margin-top: .15rem; }
+        .modmap-list { display: flex; flex-direction: column; gap: .8rem; }
+        .modmap-item { display: flex; align-items: flex-start; gap: .65rem; }
+        .modmap-item-icon { font-size: .92rem; width: 18px; text-align: center; flex-shrink: 0; margin-top: .05rem; }
+        .modmap-item-body { flex: 1; min-width: 0; }
+        .modmap-item-name { font-size: .84rem; font-weight: 600; color: var(--text); }
+        .modmap-item-desc { font-size: .745rem; color: var(--text-2); line-height: 1.45; margin-top: .1rem; }
+
+        /* ── ROADMAP / EM BREVE ─────────────────────────────────────── */
+        .roadmap-section { padding: 1rem 0 5rem; }
+        .roadmap-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.1rem;
+            margin-bottom: 2.25rem;
+        }
+        .roadmap-card {
+            background: var(--white);
+            border: 1.5px dashed var(--border-2);
+            border-radius: var(--r);
+            padding: 1.55rem;
+            transition: border-color .25s, box-shadow .25s, transform .25s var(--ease);
+        }
+        .roadmap-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+        .rc-blue:hover { border-color: var(--blue); }
+        .rc-violet:hover { border-color: var(--violet); }
+        .roadmap-top {
+            display: flex; align-items: flex-start; justify-content: space-between;
+            gap: .75rem; margin-bottom: .9rem;
+        }
+        .roadmap-icon {
+            width: 42px; height: 42px; min-width: 42px; border-radius: 11px;
+            display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+        }
+        .roadmap-status {
+            font-size: .6rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .6px; padding: .25rem .6rem; border-radius: 50px;
+            white-space: nowrap; font-family: var(--mono); margin-top: .25rem;
+        }
+        .rs-dev { background: var(--amber-tint); color: #b45309; }
+        .rs-plan { background: var(--blue-tint); color: var(--blue); }
+        .rs-research { background: var(--violet-tint); color: var(--violet); }
+        .roadmap-card h3 { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: .45rem; line-height: 1.3; }
+        .roadmap-card p { font-size: .83rem; color: var(--text-2); line-height: 1.6; }
+        .ai-pill {
+            display: inline-flex; align-items: center; gap: .35rem; margin-top: .9rem;
+            font-size: .64rem; font-weight: 700; letter-spacing: .5px;
+            padding: .22rem .6rem; border-radius: 50px;
+            background: linear-gradient(135deg, #eff6ff, #f5f3ff);
+            border: 1px solid #ddd6fe; color: var(--violet); font-family: var(--mono);
+        }
+        /* fluxos do roadmap (reaproveitam .flow-steps / .auto-flow) */
+        .flow-steps.fs-blue .flow-step-icon { background: var(--blue-tint); border-color: #bfdbfe; }
+        .flow-steps.fs-blue .flow-connector { background: linear-gradient(90deg, #bfdbfe, #93c5fd); }
+        .flow-steps.fs-future .flow-step-icon { border-style: dashed; }
+        .roadmap-flow + .roadmap-flow { margin-top: 1.25rem; }
+
+        /* ── FEATURE CARDS (CX — no screenshots) ───────────────────── */
+        .cx-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+        .cx-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            padding: 2rem;
+            transition: box-shadow .25s, border-color .25s, transform .25s var(--ease);
+            position: relative; overflow: hidden;
+        }
+        .cx-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0;
+            height: 3px;
+        }
+        .cx-card.cx-blue::before { background: linear-gradient(90deg, var(--blue), var(--blue-soft)); }
+        .cx-card.cx-violet::before { background: linear-gradient(90deg, var(--violet), var(--violet-soft)); }
+        .cx-card.cx-mixed::before { background: linear-gradient(90deg, var(--blue), var(--violet)); }
+        .cx-card:hover { box-shadow: var(--shadow-md); border-color: #ddd6fe; transform: translateY(-3px); }
+        .cx-card-icon {
+            width: 44px; height: 44px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.25rem; margin-bottom: 1rem;
+        }
+        .icon-blue { background: var(--blue-tint); }
+        .icon-violet { background: var(--violet-tint); }
+        .icon-green { background: var(--green-tint); }
+        .icon-amber { background: var(--amber-tint); }
+        .cx-card h3 {
+            font-size: 1.05rem; font-weight: 700; color: var(--text);
+            margin-bottom: .5rem; line-height: 1.3;
+        }
+        .cx-card p { font-size: .855rem; color: var(--text-2); line-height: 1.65; margin-bottom: 1rem; }
+        .cx-tags { display: flex; flex-wrap: wrap; gap: .4rem; }
+        .cx-tag {
+            display: inline-block;
+            font-size: .68rem; font-weight: 600;
+            padding: .2rem .55rem; border-radius: 50px;
+            font-family: var(--mono);
+        }
+        .ct-blue { background: var(--blue-tint); color: var(--blue); }
+        .ct-violet { background: var(--violet-tint); color: var(--violet); }
+        .ct-green { background: var(--green-tint); color: #059669; }
+
+        /* ── CX AUTO FLOW ─────────────────────────────────────────── */
+        .auto-flow {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            padding: 2rem 2.5rem;
+            margin-top: 0;
+        }
+        .auto-flow h3 {
+            font-size: 1.15rem; font-weight: 700; margin-bottom: 1.25rem;
+            color: var(--text);
+        }
+        .flow-steps {
+            display: flex; align-items: flex-start; gap: 0;
+            overflow-x: auto; padding-bottom: .5rem;
+        }
+        .flow-step {
+            display: flex; flex-direction: column; align-items: center;
+            min-width: 130px; flex: 1; text-align: center; gap: .5rem;
+        }
+        .flow-step-icon {
+            width: 44px; height: 44px; border-radius: 50%;
+            background: var(--violet-tint);
+            border: 2px solid #ddd6fe;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; position: relative; z-index: 1;
+        }
+        .flow-step-label { font-size: .72rem; font-weight: 600; color: var(--text-2); line-height: 1.3; }
+        .flow-step-sub { font-size: .66rem; color: var(--text-3); font-family: var(--mono); }
+        .flow-connector {
+            flex-shrink: 0; width: 40px; height: 2px;
+            background: linear-gradient(90deg, #ddd6fe, #c4b5fd);
+            align-self: center; margin-top: -1.5rem;
+        }
+
+        /* ── TECHNICAL CHALLENGES ───────────────────────────────────── */
+        .eng-section {
+            padding: 5.5rem 0;
+            background: var(--dark-2);
+            position: relative; overflow: hidden;
+        }
+        .eng-section::before {
+            content: '';
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+            background-size: 48px 48px;
+        }
+        .eng-section .container { position: relative; z-index: 1; }
+        .eng-section .section-header h2 { color: #fff; }
+        .eng-section .section-header p { color: var(--text-3); }
+        .eng-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+            gap: 1.5rem;
+        }
+        .eng-card {
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: var(--r); padding: 1.75rem;
+            transition: background .25s, border-color .25s;
+        }
+        .eng-card:hover {
+            background: rgba(255,255,255,.07);
+        }
+        .eng-card:hover.ec-blue { border-color: rgba(37,99,235,.4); }
+        .eng-card:hover.ec-violet { border-color: rgba(124,58,237,.4); }
+        .eng-card-top {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        .eng-num {
+            font-family: var(--mono); font-size: .68rem; font-weight: 600;
+            letter-spacing: 1px; padding: .25rem .6rem;
+            border-radius: 6px;
+        }
+        .en-blue { color: var(--blue-soft); background: rgba(37,99,235,.12); }
+        .en-violet { color: var(--violet-soft); background: rgba(124,58,237,.12); }
+        .eng-system-badge {
+            font-size: .66rem; font-weight: 600;
+            padding: .2rem .55rem; border-radius: 50px; font-family: var(--mono);
+        }
+        .esb-blue { background: rgba(37,99,235,.12); color: #60a5fa; }
+        .esb-violet { background: rgba(124,58,237,.12); color: #a78bfa; }
+        .eng-card h3 {
+            font-size: 1rem; font-weight: 700; color: #e2e8f0;
+            margin-bottom: .75rem; line-height: 1.3;
+        }
+        .eng-label {
+            font-size: .65rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px; margin-bottom: .3rem;
+        }
+        .el-problem { color: #f87171; }
+        .el-solution { color: #34d399; }
+        .eng-text { font-size: .82rem; line-height: 1.65; margin-bottom: .85rem; }
+        .eng-text.problem { color: #94a3b8; }
+        .eng-text.solution { color: #64748b; }
+        .eng-code {
+            background: rgba(0,0,0,.35);
+            border: 1px solid rgba(255,255,255,.07);
+            border-radius: 8px; padding: .75rem 1rem;
+        }
+        .eng-code code {
+            font-family: var(--mono); font-size: .73rem;
+            color: #93c5fd; line-height: 1.6;
+            display: block; white-space: pre-wrap;
+        }
+
+        /* ── SHARED STACK ───────────────────────────────────────────── */
+        .stack-section {
+            padding: 5rem 0;
+            background: var(--white);
+            border-top: 1px solid var(--border);
+        }
+        .stack-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+        }
+        .stack-group {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--r); padding: 1.5rem;
+        }
+        .stack-group-label {
+            font-size: .68rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1.5px;
+            color: var(--text-2); margin-bottom: 1rem;
+            padding-bottom: .65rem; border-bottom: 1px solid var(--border);
+        }
+        .stack-pills { display: flex; flex-wrap: wrap; gap: .5rem; }
+        .stack-pill {
+            display: inline-flex; align-items: center; gap: .45rem;
+            background: var(--white); border: 1px solid var(--border);
+            border-radius: 50px; padding: .38rem .9rem;
+            font-size: .8rem; font-weight: 500; color: var(--text);
+            transition: all .2s var(--ease); cursor: default;
+        }
+        .stack-pill:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+        .stack-pill:hover.sp-blue { border-color: var(--blue); color: var(--blue); background: var(--blue-tint); }
+        .stack-pill:hover.sp-violet { border-color: var(--violet); color: var(--violet); background: var(--violet-tint); }
+        .stack-pill .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+        /* ── CONCLUSION ─────────────────────────────────────────────── */
+        .conclusion-section { padding: 5.5rem 2rem; }
+        .conclusion-card {
+            background: var(--dark);
+            background-image:
+                radial-gradient(ellipse 50% 60% at 20% 50%, rgba(37,99,235,.2) 0%, transparent 65%),
+                radial-gradient(ellipse 50% 60% at 80% 50%, rgba(124,58,237,.2) 0%, transparent 65%);
+            border-radius: var(--r); padding: 4.5rem;
+            text-align: center; color: #fff;
+            position: relative; overflow: hidden;
+        }
+        .conclusion-card::before {
+            content: ''; position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+            background-size: 44px 44px;
+        }
+        .conclusion-card > * { position: relative; z-index: 1; }
+        .conclusion-card h2 {
+            font-size: 2.1rem; font-weight: 800;
+            letter-spacing: -1px; margin-bottom: 1rem;
+        }
+        .conclusion-card p {
+            color: var(--text-3); max-width: 580px;
+            margin: 0 auto 2.5rem; font-size: 1rem; line-height: 1.78;
+        }
+
+        /* ── FOOTER ─────────────────────────────────────────────────── */
+        footer {
+            background: var(--dark);
+            border-top: 1px solid rgba(255,255,255,.06);
+            padding: 2rem;
+        }
+        .footer-inner {
+            max-width: 1140px; margin: 0 auto;
+            display: flex; flex-direction: column;
+            align-items: center; gap: .9rem;
+        }
+        .footer-links { display: flex; gap: 1.5rem; list-style: none; flex-wrap: wrap; justify-content: center; }
+        .footer-links a { color: #475569; text-decoration: none; font-size: .8rem; transition: color .2s; }
+        .footer-links a:hover { color: var(--blue-soft); }
+        footer p { color: #334155; font-size: .75rem; }
+        footer strong { color: #64748b; }
+
+        /* ── DIVIDER ────────────────────────────────────────────────── */
+        .system-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+            margin: 0;
+        }
+
+        /* ── FADE-IN ────────────────────────────────────────────────── */
+        .fade-in {
+            opacity: 0; transform: translateY(28px);
+            transition: opacity .6s var(--ease), transform .6s var(--ease);
+        }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+        .d1 { transition-delay: .07s; }
+        .d2 { transition-delay: .14s; }
+        .d3 { transition-delay: .21s; }
+        .d4 { transition-delay: .28s; }
+        .d5 { transition-delay: .35s; }
+        .d6 { transition-delay: .42s; }
+
+        /* ── OVERFLOW SAFETY (só quebra quando necessário) ──────────── */
+        .module-info > p, .feature-list li,
+        .vflow-label, .vflow-sub, .vflow-content,
+        .modmap-item-name, .modmap-item-desc,
+        .system-header-text p, .cx-card p,
+        .eng-text, .eng-card h3, .stat-sub {
+            overflow-wrap: break-word;
+        }
+        /* tokens longos em mono podem quebrar em qualquer ponto */
+        .feature-list li code,
+        .module-info code,
+        .vflow-sub, .eng-code code {
+            overflow-wrap: anywhere;
+        }
+
+        /* ── RESPONSIVE ─────────────────────────────────────────────── */
+        @media (max-width: 960px) {
+            .stats-grid { grid-template-columns: repeat(2,1fr); }
+            /* Fluxo do CX empilha na vertical (não cabe horizontal abaixo de ~980px) */
+            .flow-steps { flex-direction: column; align-items: center; overflow-x: visible; padding-bottom: 0; }
+            .flow-step { min-width: 0; width: 100%; max-width: 280px; }
+            .flow-connector { width: 2px; height: 22px; margin: 0; align-self: center; }
+        }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .module-card, .module-card.reverse { flex-direction: column; padding: 2rem; gap: 1.5rem; }
+            .conclusion-card { padding: 2.5rem 1.5rem; }
+            .conclusion-card h2 { font-size: 1.6rem; }
+            .hero h1 { letter-spacing: -1.5px; }
+            .system-header-inner { flex-direction: column; gap: 1rem; }
+            .system-number { font-size: 3rem; }
+        }
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .hero-actions { flex-direction: column; align-items: stretch; }
+            .hero-actions a { text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- Nav -->
+<nav id="navbar">
+    <div class="nav-inner">
+        <a href="#inicio" class="nav-logo">
+            <span class="dot-blue"></span>
+            <span class="dot-violet"></span>
+            João Chociai
+        </a>
+        <div class="nav-right">
+            <ul class="nav-links">
+                <li><a href="#cobranca">Cobrança</a></li>
+                <li><a href="#cx">CX</a></li>
+                <li><a href="#engenharia">Engenharia</a></li>
+                <li><a href="#stack">Stack</a></li>
+                <li><a href="#contato" class="nav-cta">Contato</a></li>
+            </ul>
+            <div class="lang-switch" role="group" aria-label="Language / Idioma">
+                <button type="button" data-lang-btn="pt">PT</button>
+                <button type="button" data-lang-btn="en">EN</button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- ════════════════ HERO ════════════════ -->
+<header class="hero" id="inicio">
+    <div class="hero-content">
+        <div class="hero-eyebrow">
+            <span class="hero-chip chip-blue">Cobrança &amp; Crédito</span>
+            <span style="color:#334155;font-size:1rem">·</span>
+            <span class="hero-chip chip-violet">Customer Experience</span>
+        </div>
+        <h1>Dois sistemas enterprise.<br><em>Construídos do zero.</em></h1>
+        <p class="hero-sub">
+            Plataformas internas desenvolvidas para uma grande instituição de educação médica —
+            cobrindo recuperação de crédito, inteligência financeira e gestão operacional de
+            equipes de Customer Experience.
+        </p>
+        <div class="hero-systems">
+            <div class="hero-system-badge">
+                <span class="badge-dot" style="background:var(--blue-soft)"></span>
+                Gestão Financeira &amp; Cobrança · Em produção
+            </div>
+            <div class="hero-system-badge">
+                <span class="badge-dot" style="background:var(--violet-soft)"></span>
+                Operações de CX &amp; Automação · Em produção
+            </div>
+        </div>
+        <div class="hero-actions">
+            <a href="#cobranca" class="btn-primary">Ver Plataforma de Cobrança</a>
+            <a href="#cx" class="btn-violet">Ver Plataforma de CX</a>
+            <a href="#contato" class="btn-ghost">Contato</a>
+        </div>
+    </div>
+    <div class="scroll-hint">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 5v14M5 12l7 7 7-7"/>
+        </svg>
+        scroll
+    </div>
+</header>
+
+<!-- ════════════════ STATS ════════════════ -->
+<section class="stats-section">
+    <div class="container">
+        <div class="section-header fade-in" style="margin-bottom:2.5rem">
+            <span class="section-label label-light">Visão Geral</span>
+            <h2 style="color:#fff">O Ecossistema em Números</h2>
+            <p>Dois sistemas. Uma infraestrutura Firebase unificada. Em produção.</p>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card blue-accent fade-in d1">
+                <span class="stat-icon">📦</span>
+                <div class="stat-value blue" data-target="42" data-suffix="+">0</div>
+                <div class="stat-label">Módulos JavaScript</div>
+                <div class="stat-sub">ES6 modular com lazy loading</div>
+            </div>
+            <div class="stat-card violet-accent fade-in d2">
+                <span class="stat-icon">🔗</span>
+                <div class="stat-value violet" data-target="6">0</div>
+                <div class="stat-label">Integrações Externas</div>
+                <div class="stat-sub">CRM, mensageria, automação de marketing, pagamentos</div>
+            </div>
+            <div class="stat-card blue-accent fade-in d3">
+                <span class="stat-icon">✍️</span>
+                <div class="stat-value blue" data-target="28" data-suffix="k+">0</div>
+                <div class="stat-label">Linhas de JavaScript</div>
+                <div class="stat-sub">Frontend + Cloud Functions</div>
+            </div>
+            <div class="stat-card violet-accent fade-in d4">
+                <span class="stat-icon">🚀</span>
+                <div class="stat-value violet" data-target="2">0</div>
+                <div class="stat-label">Sistemas em Produção</div>
+                <div class="stat-sub">Zero frameworks de UI — 100% custom</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════ SISTEMA 01: COBRANÇA ════════════════ -->
+<div id="cobranca">
+
+    <section style="padding:5rem 0 3rem; background:var(--bg);">
+        <div class="container">
+            <div class="system-header-inner fade-in">
+                <div class="system-number blue">01</div>
+                <div class="system-header-text">
+                    <span class="section-label label-blue">Sistema</span>
+                    <h2>Plataforma de <span style="color:var(--blue)">Cobrança</span></h2>
+                    <p>Plataforma financeira de recuperação de crédito com dashboards BigQuery em tempo real, régua de cobrança escalonada e configurável, controle de chargebacks multi-adquirente e automação de disparos via plataformas de mensageria e automação de marketing.</p>
+                    <div class="system-meta">
+                        <span class="meta-pill"><span class="dot" style="background:var(--blue-soft)"></span>Em produção</span>
+                        <span class="meta-pill">31 módulos JS</span>
+                        <span class="meta-pill">20 arquivos CSS</span>
+                        <span class="meta-pill">~37k linhas</span>
+                        <span class="meta-pill">Firebase + BigQuery</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="modules-section" style="padding-top:1rem">
+        <div class="container">
+
+            <div class="section-header fade-in" style="text-align:left;margin-bottom:2rem;">
+                <span class="section-label label-blue">Módulos em Destaque</span>
+                <h2 style="font-size:1.5rem">Os 4 fluxos mais complexos do sistema</h2>
+                <p>De 31 módulos no total — abaixo, o mapa completo organizado por setor</p>
+            </div>
+
+            <!-- Dashboard -->
+            <article class="module-card blue-hover fade-in">
+                <div class="module-info">
+                    <span class="module-tag tag-blue">📊 Módulo 01 — Dashboard Executivo</span>
+                    <h3>Inteligência de Dados em Tempo Real</h3>
+                    <p>Dados do BigQuery materializados no Firestore via Cloud Functions diárias. O front-end lê documentos já agregados com ID <code>DD-MM-YYYY</code>, eliminando latência de query analítica no momento da apresentação.</p>
+                    <ul class="feature-list check-blue">
+                        <li><strong>Padrão CQRS:</strong> BigQuery executa queries pesadas 1×/dia → resultado materializado no Firestore → front-end com latência &lt;100ms</li>
+                        <li><strong>Canal próprio e de integração:</strong> KPIs de disparos, débitos e pagamentos por etapa da régua, separados por fonte</li>
+                        <li><strong>Trend badges automáticos:</strong> variação percentual calculada entre períodos (↑ verde / → amarelo / ↓ vermelho)</li>
+                        <li><strong>Desempenho jurídico:</strong> acordos via e-mail, via mensageria, termos e taxa de conversão</li>
+                    </ul>
+                </div>
+                <div class="module-visual">
+                    <div class="flow-panel">
+                        <div class="flow-panel-title"><span class="fp-dot"></span>Pipeline de Dados · CQRS</div>
+                        <div class="vflow">
+                            <div class="vflow-step">
+                                <div class="vflow-node">🗄️</div>
+                                <div class="vflow-content">
+                                    <div class="vflow-label">BigQuery</div>
+                                    <div class="vflow-sub">Query analítica pesada</div>
+                                </div>
+                            </div>
+                            <div class="vflow-step">
+                                <div class="vflow-node">⚙️</div>
+                                <div class="vflow-content">
+                                    <div class="vflow-label">Cloud Function</div>
+                                    <div class="vflow-sub">Agrega 1×/dia</div>
+                                </div>
+                            </div>
+                            <div class="vflow-step">
+                                <div class="vflow-node">🔥</div>
+                                <div class="vflow-content">
+                                    <div class="vflow-label">Firestore</div>
+                                    <div class="vflow-sub">reports/DD-MM-YYYY</div>
+                                </div>
+                            </div>
+                            <div class="vflow-step">
+                                <div class="vflow-node">📊</div>
+                                <div class="vflow-content">
+                                    <div class="vflow-label">Dashboard</div>
+                                    <div class="vflow-sub">Leitura &lt; 100ms</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Chargeback -->
+            <article class="module-card reverse blue-hover fade-in">
+                <div class="module-info">
+                    <span class="module-tag tag-blue">🔄 Módulo 02 — Gestão de Chargeback</span>
+                    <h3>Controle Multi-Adquirente</h3>
+                    <p>Múltiplas adquirentes centralizadas em uma interface com semáforo visual de prazo. Dados importados do CRM via integração. Cada disputa perdida por deadline é receita revertida — o sistema elimina esse risco.</p>
+                    <ul class="feature-list check-blue">
+                        <li><strong>Semáforo de prazo:</strong> 🔴 &lt;2 dias · 🟡 2–5 dias · 🟢 &gt;5 dias — calculado por status automaticamente</li>
+                        <li><strong>KPIs em tempo real:</strong> win rate, valor em aberto, docs pendentes, casos em análise</li>
+                        <li><strong>Rastreamento por TID:</strong> ID único da transação na adquirente como chave de auditoria imutável</li>
+                        <li><strong>Agrupamento por e-mail:</strong> múltiplos contratos do mesmo cliente unificados na tela</li>
+                    </ul>
+                </div>
+                <div class="module-visual">
+                    <div class="flow-panel">
+                        <div class="flow-panel-title"><span class="fp-dot"></span>Ciclo de Vida da Disputa</div>
+                        <div class="vflow">
+                            <div class="vflow-step">
+                                <div class="vflow-node">📥</div>
+                                <div class="vflow-content">
+                                    <div class="vflow-label">Solicitação</div>
+                                    <div class="vflow-sub">Importado do CRM</div>
+                                </div>
+                            </div>
+                            <div class="vflow-step">
+                                <div class="vflow-node">🔍</div>
+                                <div class="vflow-content">
+                                    <div class="vflow-label">Em análise</div>
+                                    <div class="vflow-sub">Semáforo de prazo ativo</div>
+                                </div>
+                            </div>
+                            <div class="vflow-step">
+                                <div class="vflow-node">📎</div>
+                                <div class="vflow-content">
+                                    <div class="vflow-label">Aguardando documentos</div>
+                                    <div class="vflow-sub">🔴 &lt;2d · 🟡 2–5d · 🟢 &gt;5d</div>
+                                </div>
+                            </div>
+                            <div class="vflow-step">
+                                <div class="vflow-node">↩️</div>
+                                <div class="vflow-content">
+                                    <div class="vflow-label">Reapresentado</div>
+                                    <div class="vflow-sub">Aguardando emissor</div>
+                                </div>
+                            </div>
+                            <div class="vflow-step">
+                                <div class="vflow-node">🏁</div>
+                                <div class="vflow-content">
+                                    <div class="vflow-label">Resolução</div>
+                                    <div class="vflow-outcomes">
+                                        <span class="vflow-outcome vo-win">Disputa ganha</span>
+                                        <span class="vflow-outcome vo-lose">Disputa perdida</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Escala / Ligações -->
+            <article class="module-card blue-hover fade-in">
+                <div class="module-info">
+                    <span class="module-tag tag-blue">📞 Módulo 03 — 3ª Cobrança e Régua</span>
+                    <h3>Régua de Recuperação Inteligente</h3>
+                    <p>Gerencia inadimplentes na janela crítica pré-jurídica. Régua de cobrança escalonada, com etapas calculadas dinamicamente. Agrupamento anti-cartesiano por documento. Trilha de auditoria <code>arrayUnion()</code> append-only — cada ação é imutável.</p>
+                    <ul class="feature-list check-blue">
+                        <li><strong>Régua escalonada:</strong> etapa atual de cada caso calculada dinamicamente em tempo real</li>
+                        <li><strong>Agrupamento por CPF:</strong> múltiplos contratos unificados — ações via <code>writeBatch()</code> atômico em todos</li>
+                        <li><strong>Ficha 360°:</strong> timeline completa do aluno via Cloud Function com 16+ tipos de evento categorizados</li>
+                        <li><strong>Encaminhamento jurídico:</strong> migração com metadados de transferência completos e log imutável</li>
+                    </ul>
+                </div>
+                <div class="module-visual">
+                    <div class="flow-panel">
+                        <div class="flow-panel-title"><span class="fp-dot"></span>Régua de Cobrança · Escalonada</div>
+                        <div class="vflow">
+                            <div class="vflow-step">
+                                <div class="vflow-node">🔔</div>
+                                <div class="vflow-content">
+                                    <div class="vflow-label">Vencimento</div>
+                                    <div class="vflow-sub">Marco inicial</div>
+                                </div>
+                            </div>
+                            <div class="vflow-step">
+                                <div class="vflow-node">📨</div>
+                                <div class="vflow-content">
+                                    <div class="vflow-label">Notificação automática</div>
+                                    <div class="vflow-sub">Disparo inicial</div>
+                                </div>
+                            </div>
+                            <div class="vflow-step">
+                                <div class="vflow-node">⏰</div>
+                                <div class="vflow-content">
+                                    <div class="vflow-label">Lembrete</div>
+                                    <div class="vflow-sub">Reforço configurável</div>
+                                </div>
+                            </div>
+                            <div class="vflow-step">
+                                <div class="vflow-node">📞</div>
+                                <div class="vflow-content">
+                                    <div class="vflow-label">Cobrança ativa</div>
+                                    <div class="vflow-sub">Contato direto</div>
+                                </div>
+                            </div>
+                            <div class="vflow-step">
+                                <div class="vflow-node">📋</div>
+                                <div class="vflow-content">
+                                    <div class="vflow-label">Escalonamento</div>
+                                    <div class="vflow-sub">Casos persistentes</div>
+                                </div>
+                            </div>
+                            <div class="vflow-step">
+                                <div class="vflow-node">⚖️</div>
+                                <div class="vflow-content">
+                                    <div class="vflow-label">Encaminhamento jurídico</div>
+                                    <div class="vflow-sub">Migração automática</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Escala interna -->
+            <article class="module-card reverse blue-hover fade-in">
+                <div class="module-info">
+                    <span class="module-tag tag-blue">📅 Módulo 04 — Operações e Escala</span>
+                    <h3>Gestão de Equipe e Automação</h3>
+                    <p>Escala com ciclo rotativo e regras de jornada variável. Módulo de automação de disparos com motor de regras dinâmico integrando plataformas de mensageria e automação de marketing com controle de rate limiting em batches.</p>
+                    <ul class="feature-list check-blue">
+                        <li><strong>Plantão do dia:</strong> card fixo mostrando responsável em tempo real via documento de configuração no Firestore</li>
+                        <li><strong>Automação multi-canal:</strong> mensageria + automação de marketing com múltiplos estágios de comunicação orquestrados por Cloud Functions agendadas</li>
+                        <li><strong>Relatórios temporais:</strong> granularidade dinâmica (mês/dia/intervalo) com Chart.js e ApexCharts</li>
+                        <li><strong>Parcerias financeiras:</strong> contratos com NF-e/NFS-e, agrupamento por lote e cálculo automático de inadimplência</li>
+                    </ul>
+                </div>
+                <div class="module-visual">
+                    <div class="flow-panel">
+                        <div class="flow-panel-title"><span class="fp-dot"></span>Motor de Disparo Multicanal</div>
+                        <div class="vflow">
+                            <div class="vflow-step">
+                                <div class="vflow-node">🎯</div>
+                                <div class="vflow-content">
+                                    <div class="vflow-label">Trigger</div>
+                                    <div class="vflow-sub">Etapa da régua atingida</div>
+                                </div>
+                            </div>
+                            <div class="vflow-step">
+                                <div class="vflow-node">🧹</div>
+                                <div class="vflow-content">
+                                    <div class="vflow-label">Filtra elegíveis</div>
+                                    <div class="vflow-sub">Higienização anti-duplicata</div>
+                                </div>
+                            </div>
+                            <div class="vflow-step">
+                                <div class="vflow-node">📦</div>
+                                <div class="vflow-content">
+                                    <div class="vflow-label">Batch</div>
+                                    <div class="vflow-sub">Rate limit por lote</div>
+                                </div>
+                            </div>
+                            <div class="vflow-step">
+                                <div class="vflow-node">💬</div>
+                                <div class="vflow-content">
+                                    <div class="vflow-label">Disparo multicanal</div>
+                                    <div class="vflow-sub">Mensageria + marketing</div>
+                                </div>
+                            </div>
+                            <div class="vflow-step">
+                                <div class="vflow-node">📝</div>
+                                <div class="vflow-content">
+                                    <div class="vflow-label">Log atômico</div>
+                                    <div class="vflow-sub">registros_disparos</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+    </section>
+
+    <!-- Mapa completo de módulos -->
+    <section class="modmap-section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <span class="section-label label-blue">Arquitetura Modular</span>
+                <h2>Mapa Completo do Sistema</h2>
+                <p>31 módulos organizados em 5 setores com controle de acesso (RBAC) por papel e setor</p>
+            </div>
+
+            <div class="modmap-grid">
+
+                <!-- ESTRATÉGICO -->
+                <div class="modmap-card fade-in d1">
+                    <div class="modmap-head">
+                        <div class="modmap-head-icon icon-blue">🎯</div>
+                        <div class="modmap-head-text">
+                            <div class="modmap-sector">Estratégico</div>
+                            <div class="modmap-count">4 módulos · acesso diretoria</div>
+                        </div>
+                    </div>
+                    <div class="modmap-list">
+                        <div class="modmap-item">
+                            <div class="modmap-item-icon">📊</div>
+                            <div class="modmap-item-body">
+                                <div class="modmap-item-name">Dashboard Executivo</div>
+                                <div class="modmap-item-desc">KPIs semanais, formas de pagamento e métricas em tempo real (ApexCharts)</div>
+                            </div>
+                        </div>
+                        <div class="modmap-item">
+                            <div class="modmap-item-icon">🔄</div>
+                            <div class="modmap-item-body">
+                                <div class="modmap-item-name">Chargeback</div>
+                                <div class="modmap-item-desc">Disputas multi-adquirente com sincronização do CRM e gestão de prazo</div>
+                            </div>
+                        </div>
+                        <div class="modmap-item">
+                            <div class="modmap-item-icon">📈</div>
+                            <div class="modmap-item-body">
+                                <div class="modmap-item-name">Relatórios</div>
+                                <div class="modmap-item-desc">Mensal, temporal e por curso — lançamento por etapa e gráficos</div>
+                            </div>
+                        </div>
+                        <div class="modmap-item">
+                            <div class="modmap-item-icon">🤝</div>
+                            <div class="modmap-item-body">
+                                <div class="modmap-item-name">Parcerias B2B</div>
+                                <div class="modmap-item-desc">Gestão de alunos e contratos (NF-e/NFS-e · IRRF/PIS/COFINS/CSLL)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COBRANÇA -->
+                <div class="modmap-card fade-in d2">
+                    <div class="modmap-head">
+                        <div class="modmap-head-icon icon-green">📞</div>
+                        <div class="modmap-head-text">
+                            <div class="modmap-sector">Cobrança</div>
+                            <div class="modmap-count">5 módulos · operação core</div>
+                        </div>
+                    </div>
+                    <div class="modmap-list">
+                        <div class="modmap-item">
+                            <div class="modmap-item-icon">🪪</div>
+                            <div class="modmap-item-body">
+                                <div class="modmap-item-name">Ficha 360°</div>
+                                <div class="modmap-item-desc">Drawer CRM read-only: resumo, faturas e timeline via Cloud Function</div>
+                            </div>
+                        </div>
+                        <div class="modmap-item">
+                            <div class="modmap-item-icon">📅</div>
+                            <div class="modmap-item-body">
+                                <div class="modmap-item-name">Agendamentos</div>
+                                <div class="modmap-item-desc">Novo, calendário e histórico de links de pagamento</div>
+                            </div>
+                        </div>
+                        <div class="modmap-item">
+                            <div class="modmap-item-icon">📞</div>
+                            <div class="modmap-item-body">
+                                <div class="modmap-item-name">3ª Cobrança</div>
+                                <div class="modmap-item-desc">Fila de ligações com agrupamento por aluno e régua escalonada</div>
+                            </div>
+                        </div>
+                        <div class="modmap-item">
+                            <div class="modmap-item-icon">⚖️</div>
+                            <div class="modmap-item-body">
+                                <div class="modmap-item-name">1ª Jurídica</div>
+                                <div class="modmap-item-desc">Fila de ligações da etapa jurídica com status</div>
+                            </div>
+                        </div>
+                        <div class="modmap-item">
+                            <div class="modmap-item-icon">✅</div>
+                            <div class="modmap-item-body">
+                                <div class="modmap-item-name">Cancelamentos</div>
+                                <div class="modmap-item-desc">Verificação em dupla checagem (supervisor + atendente)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GESTÃO DE EQUIPE -->
+                <div class="modmap-card fade-in d3">
+                    <div class="modmap-head">
+                        <div class="modmap-head-icon icon-amber">👥</div>
+                        <div class="modmap-head-text">
+                            <div class="modmap-sector">Gestão de Equipe</div>
+                            <div class="modmap-count">4 módulos · operação interna</div>
+                        </div>
+                    </div>
+                    <div class="modmap-list">
+                        <div class="modmap-item">
+                            <div class="modmap-item-icon">👤</div>
+                            <div class="modmap-item-body">
+                                <div class="modmap-item-name">Gerenciar Equipe</div>
+                                <div class="modmap-item-desc">CRUD de usuários, papéis e permissões (Cloud Function admin)</div>
+                            </div>
+                        </div>
+                        <div class="modmap-item">
+                            <div class="modmap-item-icon">🗓️</div>
+                            <div class="modmap-item-body">
+                                <div class="modmap-item-name">Escala Mensal</div>
+                                <div class="modmap-item-desc">Grade de turnos por colaborador com integração de feriados</div>
+                            </div>
+                        </div>
+                        <div class="modmap-item">
+                            <div class="modmap-item-icon">🏖️</div>
+                            <div class="modmap-item-body">
+                                <div class="modmap-item-name">Férias</div>
+                                <div class="modmap-item-desc">Workflow solicitar → aprovar → concluir com trilha de auditoria</div>
+                            </div>
+                        </div>
+                        <div class="modmap-item">
+                            <div class="modmap-item-icon">🧮</div>
+                            <div class="modmap-item-body">
+                                <div class="modmap-item-name">Minhas Tarefas</div>
+                                <div class="modmap-item-desc">Gestor pessoal com matriz de Eisenhower e visão de time</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- JURÍDICO -->
+                <div class="modmap-card fade-in d4">
+                    <div class="modmap-head">
+                        <div class="modmap-head-icon icon-violet">⚖️</div>
+                        <div class="modmap-head-text">
+                            <div class="modmap-sector">Jurídico</div>
+                            <div class="modmap-count">2 módulos · acesso restrito</div>
+                        </div>
+                    </div>
+                    <div class="modmap-list">
+                        <div class="modmap-item">
+                            <div class="modmap-item-icon">📂</div>
+                            <div class="modmap-item-body">
+                                <div class="modmap-item-name">Gestão Jurídica</div>
+                                <div class="modmap-item-desc">Acompanhamento de processos com status Ativo → Encerrado e operações em lote</div>
+                            </div>
+                        </div>
+                        <div class="modmap-item">
+                            <div class="modmap-item-icon">📅</div>
+                            <div class="modmap-item-body">
+                                <div class="modmap-item-name">Agendamentos Jurídicos</div>
+                                <div class="modmap-item-desc">Novo, calendário e histórico de agendamentos jurídicos</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DISPAROS -->
+                <div class="modmap-card fade-in d5">
+                    <div class="modmap-head">
+                        <div class="modmap-head-icon icon-blue">🚀</div>
+                        <div class="modmap-head-text">
+                            <div class="modmap-sector">Disparos &amp; Automação</div>
+                            <div class="modmap-count">4 módulos · motor de comunicação</div>
+                        </div>
+                    </div>
+                    <div class="modmap-list">
+                        <div class="modmap-item">
+                            <div class="modmap-item-icon">🗂️</div>
+                            <div class="modmap-item-body">
+                                <div class="modmap-item-name">Registros Diários</div>
+                                <div class="modmap-item-desc">Calendário de registros diários de inadimplência</div>
+                            </div>
+                        </div>
+                        <div class="modmap-item">
+                            <div class="modmap-item-icon">⚙️</div>
+                            <div class="modmap-item-body">
+                                <div class="modmap-item-name">Central de Automação</div>
+                                <div class="modmap-item-desc">Mapeamento na automação de marketing com múltiplas etapas de gatilho por e-mail</div>
+                            </div>
+                        </div>
+                        <div class="modmap-item">
+                            <div class="modmap-item-icon">💠</div>
+                            <div class="modmap-item-body">
+                                <div class="modmap-item-name">Inadimplência (Gateway)</div>
+                                <div class="modmap-item-desc">Fila do gateway de pagamento com CRUD, cálculo de datas e disparos</div>
+                            </div>
+                        </div>
+                        <div class="modmap-item">
+                            <div class="modmap-item-icon">🩺</div>
+                            <div class="modmap-item-body">
+                                <div class="modmap-item-name">Diagnósticos</div>
+                                <div class="modmap-item-desc">Logs categorizados: disparo, job, erro, resumo e sistema</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- INFRAESTRUTURA -->
+                <div class="modmap-card fade-in d6">
+                    <div class="modmap-head">
+                        <div class="modmap-head-icon icon-green">🧱</div>
+                        <div class="modmap-head-text">
+                            <div class="modmap-sector">Núcleo &amp; Infraestrutura</div>
+                            <div class="modmap-count">6 módulos · base da aplicação</div>
+                        </div>
+                    </div>
+                    <div class="modmap-list">
+                        <div class="modmap-item">
+                            <div class="modmap-item-icon">🔐</div>
+                            <div class="modmap-item-body">
+                                <div class="modmap-item-name">Auth + Permissions</div>
+                                <div class="modmap-item-desc">Google OAuth One Tap, RBAC por papel e setor com modo estrito</div>
+                            </div>
+                        </div>
+                        <div class="modmap-item">
+                            <div class="modmap-item-icon">🔥</div>
+                            <div class="modmap-item-body">
+                                <div class="modmap-item-name">Firebase Core</div>
+                                <div class="modmap-item-desc">Firestore com cache persistente multi-aba e fallback em memória</div>
+                            </div>
+                        </div>
+                        <div class="modmap-item">
+                            <div class="modmap-item-icon">🧩</div>
+                            <div class="modmap-item-body">
+                                <div class="modmap-item-name">App + UI Router</div>
+                                <div class="modmap-item-desc">Roteamento de abas, lazy-loading de módulos e visibilidade por permissão</div>
+                            </div>
+                        </div>
+                        <div class="modmap-item">
+                            <div class="modmap-item-icon">🛠️</div>
+                            <div class="modmap-item-body">
+                                <div class="modmap-item-name">Utils compartilhados</div>
+                                <div class="modmap-item-desc">Debounce, datas BR/UTC, normalização e mapeamento de status</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Visão Técnica · Cobrança -->
+    <section class="roadmap-section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <span class="section-label label-blue">Visão Técnica</span>
+                <h2>Especialização em IA aplicada à Cobrança</h2>
+                <p>Áreas que domino e a direção que enxergo para plataformas de recuperação de crédito — competências que trago para evoluir produtos do setor</p>
+            </div>
+
+            <div class="roadmap-grid">
+
+                <div class="roadmap-card rc-blue fade-in d1">
+                    <div class="roadmap-top">
+                        <div class="roadmap-icon icon-green">📈</div>
+                    </div>
+                    <h3>Score Preditivo de Inadimplência</h3>
+                    <p>Modelos estatísticos e de machine learning para prever risco de inadimplência e priorizar a carteira de forma orientada por dados.</p>
+                    <span class="ai-pill">📊 Estatística / ML</span>
+                </div>
+
+                <div class="roadmap-card rc-blue fade-in d2">
+                    <div class="roadmap-top">
+                        <div class="roadmap-icon icon-violet">🤖</div>
+                    </div>
+                    <h3>Geração de Documentos com IA</h3>
+                    <p>IA adaptativa para gerar minutas e documentos de contestação, ajustando o argumento ao contexto e ao tipo de caso, com revisão humana.</p>
+                    <span class="ai-pill">🤖 IA Adaptativa</span>
+                </div>
+
+                <div class="roadmap-card rc-blue fade-in d3">
+                    <div class="roadmap-top">
+                        <div class="roadmap-icon icon-blue">🤝</div>
+                    </div>
+                    <h3>Renegociação Assistida por IA</h3>
+                    <p>Propostas de acordo personalizadas a partir do perfil de risco — sugerindo desconto e parcelamento ideais para maximizar a recuperação.</p>
+                    <span class="ai-pill">🤝 IA de Decisão</span>
+                </div>
+
+                <div class="roadmap-card rc-blue fade-in d4">
+                    <div class="roadmap-top">
+                        <div class="roadmap-icon icon-amber">⚙️</div>
+                    </div>
+                    <h3>Automação de Workflows</h3>
+                    <p>Orquestração de etapas operacionais e jurídicas com motores de regras, reduzindo trabalho manual repetitivo sem abrir mão do controle humano.</p>
+                    <span class="ai-pill">⚙️ Orquestração</span>
+                </div>
+
+            </div>
+
+            <!-- Fluxos de IA -->
+            <div class="auto-flow roadmap-flow fade-in">
+                <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
+                    <div>
+                        <span class="section-label label-blue" style="margin-bottom:.3rem">Destaque IA · 01</span>
+                        <h3 style="font-size:1.2rem;font-weight:700;color:var(--text)">Score de Inadimplência → Renegociação Personalizada</h3>
+                        <p style="font-size:.85rem;color:var(--text-2);margin-top:.25rem">Da leitura do histórico à proposta ideal de desconto e parcelamento, calculada por perfil de risco</p>
+                    </div>
+                    <span class="cx-tag ct-blue" style="font-size:.72rem">Conceito</span>
+                </div>
+                <div class="flow-steps fs-blue fs-future">
+                    <div class="flow-step">
+                        <div class="flow-step-icon">📊</div>
+                        <div class="flow-step-label">Histórico</div>
+                        <div class="flow-step-sub">Dados transacionais</div>
+                    </div>
+                    <div class="flow-connector"></div>
+                    <div class="flow-step">
+                        <div class="flow-step-icon">🧮</div>
+                        <div class="flow-step-label">Análise estatística</div>
+                        <div class="flow-step-sub">Modelo de risco</div>
+                    </div>
+                    <div class="flow-connector"></div>
+                    <div class="flow-step">
+                        <div class="flow-step-icon">🎯</div>
+                        <div class="flow-step-label">Score de risco</div>
+                        <div class="flow-step-sub">Escala 0–1000</div>
+                    </div>
+                    <div class="flow-connector"></div>
+                    <div class="flow-step">
+                        <div class="flow-step-icon">🤖</div>
+                        <div class="flow-step-label">IA de proposta</div>
+                        <div class="flow-step-sub">Desconto + parcelas</div>
+                    </div>
+                    <div class="flow-connector"></div>
+                    <div class="flow-step">
+                        <div class="flow-step-icon">🤝</div>
+                        <div class="flow-step-label">Renegociação</div>
+                        <div class="flow-step-sub">Oferta personalizada</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="auto-flow roadmap-flow fade-in">
+                <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
+                    <div>
+                        <span class="section-label label-blue" style="margin-bottom:.3rem">Destaque IA · 02</span>
+                        <h3 style="font-size:1.2rem;font-weight:700;color:var(--text)">Gerador Inteligente de Contestação de Chargeback</h3>
+                        <p style="font-size:.85rem;color:var(--text-2);margin-top:.25rem">IA adaptativa que monta a minuta de defesa conforme o contexto, com revisão humana antes do envio</p>
+                    </div>
+                    <span class="cx-tag ct-violet" style="font-size:.72rem">Conceito</span>
+                </div>
+                <div class="flow-steps fs-blue fs-future">
+                    <div class="flow-step">
+                        <div class="flow-step-icon">📥</div>
+                        <div class="flow-step-label">Caso de chargeback</div>
+                        <div class="flow-step-sub">Evidências + TID</div>
+                    </div>
+                    <div class="flow-connector"></div>
+                    <div class="flow-step">
+                        <div class="flow-step-icon">🧠</div>
+                        <div class="flow-step-label">IA analisa</div>
+                        <div class="flow-step-sub">Histórico + provas</div>
+                    </div>
+                    <div class="flow-connector"></div>
+                    <div class="flow-step">
+                        <div class="flow-step-icon">✍️</div>
+                        <div class="flow-step-label">Gera minuta</div>
+                        <div class="flow-step-sub">Adaptada ao contexto</div>
+                    </div>
+                    <div class="flow-connector"></div>
+                    <div class="flow-step">
+                        <div class="flow-step-icon">👤</div>
+                        <div class="flow-step-label">Revisão humana</div>
+                        <div class="flow-step-sub">Ajuste final</div>
+                    </div>
+                    <div class="flow-connector"></div>
+                    <div class="flow-step">
+                        <div class="flow-step-icon">🚀</div>
+                        <div class="flow-step-label">Submissão</div>
+                        <div class="flow-step-sub">Envio à adquirente</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+</div>
+
+<div class="system-divider"></div>
+
+<!-- ════════════════ SISTEMA 02: CX ════════════════ -->
+<div id="cx" style="background:var(--bg)">
+
+    <section style="padding:5rem 0 3rem;">
+        <div class="container">
+            <div class="system-header-inner fade-in">
+                <div class="system-number violet">02</div>
+                <div class="system-header-text">
+                    <span class="section-label label-violet">Sistema</span>
+                    <h2>Plataforma de <span style="color:var(--violet)">CX</span></h2>
+                    <p>Plataforma de operações para equipes de Customer Experience — gerenciamento de escalas (3 setores, 5 cidades), automação de onboarding via WhatsApp integrando CRM + plataforma de mensageria, férias com Gantt e trilha de auditoria completa.</p>
+                    <div class="system-meta">
+                        <span class="meta-pill"><span class="dot" style="background:var(--violet-soft)"></span>Em produção</span>
+                        <span class="meta-pill">11 módulos JS</span>
+                        <span class="meta-pill">3.121 linhas CSS</span>
+                        <span class="meta-pill">~12k linhas total</span>
+                        <span class="meta-pill">Firebase + BigQuery</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section style="padding:0 0 5rem">
+        <div class="container">
+
+            <div class="cx-grid">
+
+                <div class="cx-card cx-violet fade-in d1">
+                    <div class="cx-card-icon icon-violet">📅</div>
+                    <h3>Gestão de Escalas — 3 Setores</h3>
+                    <p>Suporte (4 equipes), SA — Sucesso do Aluno (3 equipes) e Concierge (5 cidades: Recife, BH, Salvador, Curitiba, SP). Cada tipo com regras de turno, rodízio de FDS e injeção dinâmica de concierge nas escalas principais.</p>
+                    <div class="cx-tags">
+                        <span class="cx-tag ct-violet">Drag &amp; Drop editor</span>
+                        <span class="cx-tag ct-violet">Auto-save draft 3s</span>
+                        <span class="cx-tag ct-violet">Publicação atômica</span>
+                        <span class="cx-tag ct-green">5 cidades</span>
+                    </div>
+                </div>
+
+                <div class="cx-card cx-violet fade-in d2">
+                    <div class="cx-card-icon icon-amber">📋</div>
+                    <h3>Editor com Drag-and-Drop</h3>
+                    <p>Chips nomeados arrastáveis entre células. Auto-save de rascunho a cada 3 segundos (debounced) em <code>escalas_rascunhos</code>. Três modos de geração: Completa, Faltando e Anterior. Detector de conflito (mesmo nome em dois turnos no mesmo dia).</p>
+                    <div class="cx-tags">
+                        <span class="cx-tag ct-violet">HTML5 DataTransfer</span>
+                        <span class="cx-tag ct-violet">Shift = copiar</span>
+                        <span class="cx-tag ct-blue">writeBatch atômico</span>
+                    </div>
+                </div>
+
+                <div class="cx-card cx-violet fade-in d3">
+                    <div class="cx-card-icon icon-green">🏖️</div>
+                    <h3>Férias com Gantt Visual</h3>
+                    <p>Workflow de aprovação completo: solicitado → aguardando → aprovado → concluído. Gantt Chart mensal com 12 cores rotativas e lógica de carry-over para férias que atravessam meses. Integração automática com as escalas — dias aprovados aparecem na grade.</p>
+                    <div class="cx-tags">
+                        <span class="cx-tag ct-green">Gantt nativo CSS</span>
+                        <span class="cx-tag ct-green">Workdays auto-calc</span>
+                        <span class="cx-tag ct-violet">4 status flow</span>
+                    </div>
+                </div>
+
+                <div class="cx-card cx-violet fade-in d4">
+                    <div class="cx-card-icon icon-violet">🗓️</div>
+                    <h3>Feriados — Total e Parcial</h3>
+                    <p>Dois tipos: total (todos folga) e parcial (setores específicos trabalham com horário definido). Feriados parciais mostram tooltip nas escalas indicando quem trabalha e qual horário. Integração direta com a automação de WhatsApp — disparos são bloqueados em feriados.</p>
+                    <div class="cx-tags">
+                        <span class="cx-tag ct-violet">Tipo total / parcial</span>
+                        <span class="cx-tag ct-blue">Bloqueia automação</span>
+                        <span class="cx-tag ct-violet">Tooltip por setor</span>
+                    </div>
+                </div>
+
+                <div class="cx-card cx-mixed fade-in d5">
+                    <div class="cx-card-icon icon-violet">🔐</div>
+                    <h3>RBAC Granular + Trilha de Auditoria</h3>
+                    <p>3 papéis (superadmin, admin, user) com permissões granulares no array <code>users.permissions[]</code>. Toda ação sensível é logada em <code>auditoria</code> com timestamp server-side, email e detalhes. Logout automático por inatividade (20 min).</p>
+                    <div class="cx-tags">
+                        <span class="cx-tag ct-blue">20+ actions auditadas</span>
+                        <span class="cx-tag ct-violet">CSS class-based RBAC</span>
+                        <span class="cx-tag ct-green">serverTimestamp()</span>
+                    </div>
+                </div>
+
+                <div class="cx-card cx-mixed fade-in d6">
+                    <div class="cx-card-icon icon-blue">📱</div>
+                    <h3>Minha Escala — Calendário Pessoal</h3>
+                    <p>Cada colaborador vê seu próprio calendário mensal com turno e horário por dia. Cores por turno: 🟠 Manhã / 🟢 Intermediário / 🔵 Tarde / 🟣 Noite. Feriados e nome do feriado exibidos inline. Agrega dados de múltiplos setores pelo <code>nomeEscala</code> do usuário.</p>
+                    <div class="cx-tags">
+                        <span class="cx-tag ct-blue">Multi-setor merge</span>
+                        <span class="cx-tag ct-violet">4 cores de turno</span>
+                        <span class="cx-tag ct-green">Today highlight</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- WhatsApp Automation Flow -->
+            <div class="auto-flow fade-in">
+                <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
+                    <div>
+                        <span class="section-label label-violet" style="margin-bottom:.3rem">Automação</span>
+                        <h3 style="font-size:1.2rem;font-weight:700;color:var(--text)">Onboarding Automático via WhatsApp</h3>
+                        <p style="font-size:.85rem;color:var(--text-2);margin-top:.25rem">Cloud Function schedulada a cada 5 minutos — consulta o CRM via BigQuery, deduplica e dispara mensagens personalizadas via mensageria</p>
+                    </div>
+                    <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+                        <span class="cx-tag ct-violet" style="font-size:.72rem">Scheduled every 5min</span>
+                        <span class="cx-tag ct-blue" style="font-size:.72rem">us-central1 + sa-east1</span>
+                    </div>
+                </div>
+                <div class="flow-steps">
+                    <div class="flow-step">
+                        <div class="flow-step-icon">🗄️</div>
+                        <div class="flow-step-label">BigQuery</div>
+                        <div class="flow-step-sub">CRM query</div>
+                    </div>
+                    <div class="flow-connector"></div>
+                    <div class="flow-step">
+                        <div class="flow-step-icon">🔍</div>
+                        <div class="flow-step-label">Filtrar</div>
+                        <div class="flow-step-sub">Pago hoje + ativo</div>
+                    </div>
+                    <div class="flow-connector"></div>
+                    <div class="flow-step">
+                        <div class="flow-step-icon">🔄</div>
+                        <div class="flow-step-label">Deduplica</div>
+                        <div class="flow-step-sub">sa_dispatched</div>
+                    </div>
+                    <div class="flow-connector"></div>
+                    <div class="flow-step">
+                        <div class="flow-step-icon">💬</div>
+                        <div class="flow-step-label">Mensageria</div>
+                        <div class="flow-step-sub">Check fila ativa</div>
+                    </div>
+                    <div class="flow-connector"></div>
+                    <div class="flow-step">
+                        <div class="flow-step-icon">📲</div>
+                        <div class="flow-step-label">Disparo</div>
+                        <div class="flow-step-sub">Template WhatsApp</div>
+                    </div>
+                    <div class="flow-connector"></div>
+                    <div class="flow-step">
+                        <div class="flow-step-icon">📝</div>
+                        <div class="flow-step-label">Log</div>
+                        <div class="flow-step-sub">automacao_logs</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Visão Técnica · CX -->
+    <section class="roadmap-section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <span class="section-label label-violet">Visão Técnica</span>
+                <h2>Especialização em Automação &amp; CX</h2>
+                <p>Áreas que domino e a direção que enxergo para plataformas de Customer Experience — competências que trago para evoluir produtos do setor</p>
+            </div>
+
+            <div class="roadmap-grid">
+
+                <div class="roadmap-card rc-violet fade-in d1">
+                    <div class="roadmap-top">
+                        <div class="roadmap-icon icon-violet">🧩</div>
+                    </div>
+                    <h3>Construtor Visual de Automações</h3>
+                    <p>Réguas de comunicação personalizadas e 100% editáveis, com editor visual de fluxos no estilo n8n — gatilhos, condições, esperas e ações montados sem escrever código.</p>
+                    <span class="ai-pill">🧩 No-Code · Drag &amp; Drop</span>
+                </div>
+
+                <div class="roadmap-card rc-violet fade-in d2">
+                    <div class="roadmap-top">
+                        <div class="roadmap-icon icon-green">🔁</div>
+                    </div>
+                    <h3>Pesquisas Win/Loss Automatizadas</h3>
+                    <p>Disparo automático de pesquisas por evento (ganho ou perda do cliente), com categorização do motivo raiz e insights de retenção orientados por dados.</p>
+                    <span class="ai-pill">📊 Análise de Retenção</span>
+                </div>
+
+            </div>
+
+            <!-- Fluxos -->
+            <div class="auto-flow roadmap-flow fade-in">
+                <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
+                    <div>
+                        <span class="section-label label-violet" style="margin-bottom:.3rem">Destaque · 01</span>
+                        <h3 style="font-size:1.2rem;font-weight:700;color:var(--text)">Construtor de Régua de Onboarding (estilo n8n)</h3>
+                        <p style="font-size:.85rem;color:var(--text-2);margin-top:.25rem">Editor visual de nós encadeáveis — cada etapa configurável e ramificável, sem escrever código</p>
+                    </div>
+                    <span class="cx-tag ct-violet" style="font-size:.72rem">Conceito</span>
+                </div>
+                <div class="flow-steps fs-future">
+                    <div class="flow-step">
+                        <div class="flow-step-icon">⚡</div>
+                        <div class="flow-step-label">Gatilho</div>
+                        <div class="flow-step-sub">Matrícula / evento</div>
+                    </div>
+                    <div class="flow-connector"></div>
+                    <div class="flow-step">
+                        <div class="flow-step-icon">🔀</div>
+                        <div class="flow-step-label">Condição</div>
+                        <div class="flow-step-sub">Segmenta o aluno</div>
+                    </div>
+                    <div class="flow-connector"></div>
+                    <div class="flow-step">
+                        <div class="flow-step-icon">✉️</div>
+                        <div class="flow-step-label">Ação</div>
+                        <div class="flow-step-sub">Mensagem / e-mail</div>
+                    </div>
+                    <div class="flow-connector"></div>
+                    <div class="flow-step">
+                        <div class="flow-step-icon">⏱️</div>
+                        <div class="flow-step-label">Espera</div>
+                        <div class="flow-step-sub">Delay configurável</div>
+                    </div>
+                    <div class="flow-connector"></div>
+                    <div class="flow-step">
+                        <div class="flow-step-icon">🔁</div>
+                        <div class="flow-step-label">Ramificação</div>
+                        <div class="flow-step-sub">Próximo nó</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="auto-flow roadmap-flow fade-in">
+                <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
+                    <div>
+                        <span class="section-label label-violet" style="margin-bottom:.3rem">Destaque · 02</span>
+                        <h3 style="font-size:1.2rem;font-weight:700;color:var(--text)">Pesquisa Win/Loss Automática</h3>
+                        <p style="font-size:.85rem;color:var(--text-2);margin-top:.25rem">Do evento de ganho/perda ao insight de retenção, com categorização automática do motivo</p>
+                    </div>
+                    <span class="cx-tag ct-green" style="font-size:.72rem">Conceito</span>
+                </div>
+                <div class="flow-steps fs-future">
+                    <div class="flow-step">
+                        <div class="flow-step-icon">🏁</div>
+                        <div class="flow-step-label">Evento</div>
+                        <div class="flow-step-sub">Ganho ou perda</div>
+                    </div>
+                    <div class="flow-connector"></div>
+                    <div class="flow-step">
+                        <div class="flow-step-icon">📨</div>
+                        <div class="flow-step-label">Dispara pesquisa</div>
+                        <div class="flow-step-sub">Canal automático</div>
+                    </div>
+                    <div class="flow-connector"></div>
+                    <div class="flow-step">
+                        <div class="flow-step-icon">📝</div>
+                        <div class="flow-step-label">Coleta resposta</div>
+                        <div class="flow-step-sub">Win/loss survey</div>
+                    </div>
+                    <div class="flow-connector"></div>
+                    <div class="flow-step">
+                        <div class="flow-step-icon">🧠</div>
+                        <div class="flow-step-label">Categoriza</div>
+                        <div class="flow-step-sub">Motivo raiz</div>
+                    </div>
+                    <div class="flow-connector"></div>
+                    <div class="flow-step">
+                        <div class="flow-step-icon">📊</div>
+                        <div class="flow-step-label">Insights</div>
+                        <div class="flow-step-sub">Dashboard de retenção</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+</div>
+
+<!-- ════════════════ ENGENHARIA ════════════════ -->
+<section class="eng-section" id="engenharia">
+    <div class="container">
+        <div class="section-header fade-in">
+            <span class="section-label label-light">Engenharia</span>
+            <h2>Desafios Técnicos Superados</h2>
+            <p>Os problemas mais complexos de ambos os sistemas — com as soluções de arquitetura que os resolvem</p>
+        </div>
+        <div class="eng-grid">
+
+            <div class="eng-card ec-blue fade-in d1">
+                <div class="eng-card-top">
+                    <span class="eng-num en-blue">01 / BIGQUERY</span>
+                    <span class="eng-system-badge esb-blue">Cobrança</span>
+                </div>
+                <h3>Produto Cartesiano no CRM</h3>
+                <div class="eng-label el-problem">O Problema</div>
+                <p class="eng-text problem">Um aluno com 3 contratos no CRM aparecia com 3× o valor real de débito em JOINs ingênuos — tornando os números de inadimplência completamente imprecisos para a diretoria.</p>
+                <div class="eng-label el-solution">A Solução</div>
+                <p class="eng-text solution">Deduplicação em dois níveis: ROW_NUMBER no BigQuery antes de agregar, e agrupamento em memória no front-end antes de qualquer renderização de KPI.</p>
+                <div class="eng-code">
+                    <code>ROW_NUMBER() OVER (
+  PARTITION BY cpf
+  ORDER BY data_vencimento
+) rn -- only rn = 1 enters the aggregation</code>
+                </div>
+            </div>
+
+            <div class="eng-card ec-blue fade-in d2">
+                <div class="eng-card-top">
+                    <span class="eng-num en-blue">02 / FIRESTORE</span>
+                    <span class="eng-system-badge esb-blue">Cobrança</span>
+                </div>
+                <h3>Consistência Financeira Centavo a Centavo</h3>
+                <div class="eng-label el-problem">O Problema</div>
+                <p class="eng-text problem">Firestore tem consistência eventual. Dois operadores atualizando o mesmo registro de dívida simultaneamente poderia resultar em dados corrompidos — inaceitável em contexto financeiro.</p>
+                <div class="eng-label el-solution">A Solução</div>
+                <p class="eng-text solution">writeBatch() para atomicidade multi-documento, arrayUnion() para trilha append-only, IDs determinísticos para idempotência em reimportações e serverTimestamp() em todos os campos de data.</p>
+                <div class="eng-code">
+                    <code>const batch = writeBatch(db);
+// all or nothing — no partial state
+batch.update(ref, {
+  HistoricoLogs: arrayUnion(log),
+  updatedAt: serverTimestamp() // no client clock
+});
+await batch.commit();</code>
+                </div>
+            </div>
+
+            <div class="eng-card ec-violet fade-in d3">
+                <div class="eng-card-top">
+                    <span class="eng-num en-violet">03 / ARQUITETURA</span>
+                    <span class="eng-system-badge esb-violet">Ambos</span>
+                </div>
+                <h3>BigQuery Analítico sem Latência de Leitura</h3>
+                <div class="eng-label el-problem">O Problema</div>
+                <p class="eng-text problem">Consultar BigQuery diretamente a cada acesso ao dashboard seria lento (2–5s por query) e caro. Inviável para uma diretoria que precisa de dados instantâneos.</p>
+                <div class="eng-label el-solution">A Solução</div>
+                <p class="eng-text solution">Padrão CQRS simplificado: Cloud Functions executam queries pesadas 1×/dia e materializam o resultado no Firestore. Front-end lê sempre documentos já prontos — latência &lt;100ms.</p>
+                <div class="eng-code">
+                    <code>// BigQuery (1x/day via Cloud Function)
+//   ↓ materialize result
+// Firestore: reports/DD-MM-YYYY {}
+//   ↓ front-end reads (< 100ms)
+await getDoc(doc(db,'reports',today))</code>
+                </div>
+            </div>
+
+            <div class="eng-card ec-violet fade-in d4">
+                <div class="eng-card-top">
+                    <span class="eng-num en-violet">04 / MENSAGERIA</span>
+                    <span class="eng-system-badge esb-violet">CX</span>
+                </div>
+                <h3>Deduplicação de WhatsApp em Escala</h3>
+                <div class="eng-label el-problem">O Problema</div>
+                <p class="eng-text problem">Com a Cloud Function disparando a cada 5 minutos, o mesmo aluno recém-matriculado poderia receber a mensagem de onboarding múltiplas vezes — deteriorando a experiência do cliente.</p>
+                <div class="eng-label el-solution">A Solução</div>
+                <p class="eng-text solution">Coleção Firestore dedicada como guard de idempotência. Antes de qualquer disparo, consulta uma coleção-guard pelo ID do destinatário. Se existir, pula. Se não existir, dispara e registra atomicamente.</p>
+                <div class="eng-code">
+                    <code>// Idempotency guard
+const ref = doc(db, 'dispatched', id)
+const snap = await getDoc(ref)
+if (snap.exists()) continue // already sent
+await dispatch(recipient) // send
+await setDoc(ref, { dispatchedAt, templateId })</code>
+                </div>
+            </div>
+
+            <div class="eng-card ec-blue fade-in d5">
+                <div class="eng-card-top">
+                    <span class="eng-num en-blue">05 / DATA</span>
+                    <span class="eng-system-badge esb-blue">Cobrança</span>
+                </div>
+                <h3>Régua com DST e Calendário de Feriados</h3>
+                <div class="eng-label el-problem">O Problema</div>
+                <p class="eng-text problem">Calcular as etapas da régua em produção exige respeitar o horário de Brasília (DST), pular fins de semana e ignorar feriados cadastrados — garantindo que cada ação caia sempre em dia útil.</p>
+                <div class="eng-label el-solution">A Solução</div>
+                <p class="eng-text solution">Toda aritmética de datas forçada em America/Sao_Paulo via Intl. Feriados consultados por documento Firestore indexado por data ISO. Push automático para o próximo dia útil.</p>
+                <div class="eng-code">
+                    <code>// Always America/Sao_Paulo dates
+let d = nextStage(base)
+// skip weekends and holidays
+while (isHoliday(d) || isWeekend(d)) d++</code>
+                </div>
+            </div>
+
+            <div class="eng-card ec-violet fade-in d6">
+                <div class="eng-card-top">
+                    <span class="eng-num en-violet">06 / ESTRUTURA</span>
+                    <span class="eng-system-badge esb-violet">CX</span>
+                </div>
+                <h3>Modelo de Dados Flat para Escalas</h3>
+                <div class="eng-label el-problem">O Problema</div>
+                <p class="eng-text problem">Escalas têm estrutura matricial (pessoa × dia × turno) que em Firestore resultaria em arrays aninhados — gerando custos de leitura por documento aninhado e dificultando atualizações pontuais.</p>
+                <div class="eng-label el-solution">A Solução</div>
+                <p class="eng-text solution">Modelo flat com chaves compostas: cell_YYYY-MM-DD_CARGO = nomes (slash-separated). Um único documento por mês por setor. Atualização pontual sem sobrescrever o documento inteiro via update() com campo específico.</p>
+                <div class="eng-code">
+                    <code>// One doc per month/sector — composite key
+{
+  "cell_2026-06-16_Atendente": "Ana/João",
+  "cell_2026-06-16_Supervisora": "Maria",
+  "label_week1_turno_horario": "9h–17h"
+}</code>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════ STACK ════════════════ -->
+<section class="stack-section" id="stack">
+    <div class="container">
+        <div class="section-header fade-in">
+            <span class="section-label label-blue">Infraestrutura</span>
+            <h2>Stack Tecnológica Unificada</h2>
+            <p>Ambos os sistemas compartilham a mesma infraestrutura Firebase — decisão que eliminou custo operacional de manter dois backends distintos</p>
+        </div>
+        <div class="stack-grid fade-in">
+
+            <div class="stack-group">
+                <div class="stack-group-label">Frontend</div>
+                <div class="stack-pills">
+                    <span class="stack-pill sp-blue"><span class="dot" style="background:#f7df1e"></span>JavaScript ES6</span>
+                    <span class="stack-pill sp-blue"><span class="dot" style="background:#e34c26"></span>HTML5</span>
+                    <span class="stack-pill sp-blue"><span class="dot" style="background:#1572b6"></span>CSS3 Modular</span>
+                    <span class="stack-pill sp-blue"><span class="dot" style="background:#3b82f6"></span>ApexCharts</span>
+                    <span class="stack-pill sp-blue"><span class="dot" style="background:#6366f1"></span>Chart.js</span>
+                    <span class="stack-pill sp-blue"><span class="dot" style="background:#f59e0b"></span>SweetAlert2</span>
+                    <span class="stack-pill sp-blue"><span class="dot" style="background:#10b981"></span>Flatpickr</span>
+                </div>
+            </div>
+
+            <div class="stack-group">
+                <div class="stack-group-label">Backend &amp; Serverless</div>
+                <div class="stack-pills">
+                    <span class="stack-pill sp-violet"><span class="dot" style="background:#f6820d"></span>Firebase Cloud Functions</span>
+                    <span class="stack-pill sp-violet"><span class="dot" style="background:#68a063"></span>Node.js 20</span>
+                    <span class="stack-pill sp-violet"><span class="dot" style="background:#f6820d"></span>Firebase Auth (OAuth 2.0)</span>
+                    <span class="stack-pill sp-violet"><span class="dot" style="background:#f6820d"></span>Cloud Firestore</span>
+                </div>
+            </div>
+
+            <div class="stack-group">
+                <div class="stack-group-label">Dados &amp; Analytics</div>
+                <div class="stack-pills">
+                    <span class="stack-pill sp-blue"><span class="dot" style="background:#4285f4"></span>Google BigQuery</span>
+                    <span class="stack-pill sp-blue"><span class="dot" style="background:#217346"></span>Excel / CSV Export</span>
+                    <span class="stack-pill sp-blue"><span class="dot" style="background:#4285f4"></span>Exportação para nuvem</span>
+                </div>
+            </div>
+
+            <div class="stack-group">
+                <div class="stack-group-label">Categorias de Integração</div>
+                <div class="stack-pills">
+                    <span class="stack-pill sp-violet"><span class="dot" style="background:#00a1e0"></span>CRM</span>
+                    <span class="stack-pill sp-violet"><span class="dot" style="background:#e91e8c"></span>Mensageria (WhatsApp / SMS)</span>
+                    <span class="stack-pill sp-violet"><span class="dot" style="background:#356ae6"></span>Automação de Marketing</span>
+                    <span class="stack-pill sp-violet"><span class="dot" style="background:#03a651"></span>Gateways de Pagamento</span>
+                    <span class="stack-pill sp-violet"><span class="dot" style="background:#00a651"></span>Múltiplas Adquirentes</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════ CONCLUSION ════════════════ -->
+<section class="conclusion-section" id="contato">
+    <div class="container">
+        <div class="conclusion-card fade-in">
+            <span class="section-label label-light" style="justify-content:center;margin-bottom:1rem;">
+                Próximos Passos
+            </span>
+            <h2>Vamos construir juntos?</h2>
+            <p>
+                Dois sistemas enterprise em produção — do zero, sozinho. Arquitetura serverless,
+                integrações com CRM, gateways de pagamento e mensageria, dashboards analíticos e
+                interfaces construídas para quem usa todos os dias.
+            </p>
+            <div class="hero-actions">
+                <a href="https://wa.me/5542998685337" class="btn-primary" target="_blank" rel="noopener noreferrer">WhatsApp · (42) 99868-5337</a>
+                <a href="https://www.linkedin.com/in/joao-chociai/" class="btn-ghost" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="footer-inner">
+        <ul class="footer-links">
+            <li><a href="#inicio">Início</a></li>
+            <li><a href="#cobranca">Plataforma de Cobrança</a></li>
+            <li><a href="#cx">Plataforma de CX</a></li>
+            <li><a href="#engenharia">Engenharia</a></li>
+            <li><a href="#stack">Stack</a></li>
+            <li><a href="https://wa.me/5542998685337" target="_blank" rel="noopener noreferrer">WhatsApp · (42) 99868-5337</a></li>
+        </ul>
+        <p>Desenvolvido por <strong>João Chociai</strong> · Plataformas de Cobrança &amp; CX · 2025–2026</p>
+    </div>
+</footer>
+
+<script>
+    /* ── PROGRESS + NAV ── */
+    const bar    = document.getElementById('progress-bar');
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        bar.style.width = (window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100) + '%';
+        navbar.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    /* ── FADE-IN ── */
+    const fadeObs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting) { e.target.classList.add('visible'); fadeObs.unobserve(e.target); }
+        });
+    }, { threshold: 0.07, rootMargin: '0px 0px -36px 0px' });
+    document.querySelectorAll('.fade-in').forEach(el => fadeObs.observe(el));
+
+    /* ── COUNTER ── */
+    function animateCounter(el) {
+        const target = parseInt(el.dataset.target, 10);
+        const suffix = el.dataset.suffix || '';
+        const steps  = 60;
+        let   frame  = 0;
+        const tick = () => {
+            frame++;
+            const eased = 1 - Math.pow(1 - frame / steps, 3);
+            el.textContent = Math.round(eased * target) + suffix;
+            if (frame < steps) requestAnimationFrame(tick);
+            else el.textContent = target + suffix;
+        };
+        requestAnimationFrame(tick);
+    }
+    const cntObs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting) { animateCounter(e.target); cntObs.unobserve(e.target); }
+        });
+    }, { threshold: 0.6 });
+    document.querySelectorAll('[data-target]').forEach(el => cntObs.observe(el));
+</script>
+
+<!-- ── i18n · PT/EN ── -->
+<script>
+(function(){
+  var D = {
+    // NAV
+    "Cobrança":"Collections","Engenharia":"Engineering","Contato":"Contact",
+    // HERO
+    "Cobrança & Crédito":"Collections & Credit",
+    "Dois sistemas enterprise.":"Two enterprise systems.",
+    "Construídos do zero.":"Built from scratch.",
+    "Plataformas internas desenvolvidas para uma grande instituição de educação médica — cobrindo recuperação de crédito, inteligência financeira e gestão operacional de equipes de Customer Experience.":"Internal platforms built for a large medical-education institution — covering credit recovery, financial intelligence and the operational management of Customer Experience teams.",
+    "Gestão Financeira & Cobrança · Em produção":"Financial Management & Collections · In production",
+    "Operações de CX & Automação · Em produção":"CX Operations & Automation · In production",
+    "Ver Plataforma de Cobrança":"View Collections Platform",
+    "Ver Plataforma de CX":"View CX Platform",
+    // STATS
+    "Visão Geral":"Overview",
+    "O Ecossistema em Números":"The Ecosystem in Numbers",
+    "Dois sistemas. Uma infraestrutura Firebase unificada. Em produção.":"Two systems. One unified Firebase infrastructure. In production.",
+    "Módulos JavaScript":"JavaScript Modules","ES6 modular com lazy loading":"Modular ES6, lazy-loaded",
+    "Integrações Externas":"External Integrations",
+    "CRM, mensageria, automação de marketing, pagamentos":"CRM, messaging, marketing automation, payments",
+    "Linhas de JavaScript":"Lines of JavaScript",
+    "Sistemas em Produção":"Systems in Production",
+    "Zero frameworks de UI — 100% custom":"Zero UI frameworks — 100% custom",
+    // SYSTEM 01 header
+    "Sistema":"System","Plataforma de":"",
+    "Plataforma financeira de recuperação de crédito com dashboards BigQuery em tempo real, régua de cobrança escalonada e configurável, controle de chargebacks multi-adquirente e automação de disparos via plataformas de mensageria e automação de marketing.":"A financial credit-recovery platform with real-time BigQuery dashboards, a tiered and configurable collections cadence, multi-acquirer chargeback control, and dispatch automation via messaging and marketing-automation platforms.",
+    "Em produção":"In production","31 módulos JS":"31 JS modules","20 arquivos CSS":"20 CSS files","~37k linhas":"~37k lines",
+    "Módulos em Destaque":"Featured Modules",
+    "Os 4 fluxos mais complexos do sistema":"The 4 most complex flows in the system",
+    "De 31 módulos no total — abaixo, o mapa completo organizado por setor":"Out of 31 modules total — the full map, organized by sector, is below",
+    // MODULE 01
+    "📊 Módulo 01 — Dashboard Executivo":"📊 Module 01 — Executive Dashboard",
+    "Inteligência de Dados em Tempo Real":"Real-Time Data Intelligence",
+    "Dados do BigQuery materializados no Firestore via Cloud Functions diárias. O front-end lê documentos já agregados com ID":"BigQuery data materialized into Firestore via daily Cloud Functions. The front-end reads already-aggregated documents keyed by ID",
+    ", eliminando latência de query analítica no momento da apresentação.":", eliminating analytical-query latency at presentation time.",
+    "Padrão CQRS:":"CQRS pattern:",
+    "BigQuery executa queries pesadas 1×/dia → resultado materializado no Firestore → front-end com latência <100ms":"BigQuery runs heavy queries once a day → result materialized into Firestore → front-end with <100ms latency",
+    "Canal próprio e de integração:":"In-house & integration channels:",
+    "KPIs de disparos, débitos e pagamentos por etapa da régua, separados por fonte":"Dispatch, debt and payment KPIs per cadence stage, split by source",
+    "Trend badges automáticos:":"Automatic trend badges:",
+    "variação percentual calculada entre períodos (↑ verde / → amarelo / ↓ vermelho)":"percentage variation computed between periods (↑ green / → yellow / ↓ red)",
+    "Desempenho jurídico:":"Legal performance:",
+    "acordos via e-mail, via mensageria, termos e taxa de conversão":"agreements via email and messaging, terms and conversion rate",
+    "Pipeline de Dados · CQRS":"Data Pipeline · CQRS",
+    "Query analítica pesada":"Heavy analytical query","Agrega 1×/dia":"Aggregates once a day",
+    "Leitura < 100ms":"Read < 100ms",
+    // MODULE 02
+    "🔄 Módulo 02 — Gestão de Chargeback":"🔄 Module 02 — Chargeback Management",
+    "Controle Multi-Adquirente":"Multi-Acquirer Control",
+    "Múltiplas adquirentes centralizadas em uma interface com semáforo visual de prazo. Dados importados do CRM via integração. Cada disputa perdida por deadline é receita revertida — o sistema elimina esse risco.":"Multiple acquirers centralized in a single interface with a visual deadline indicator. Data imported from the CRM via integration. Every dispute lost to a missed deadline is reversed revenue — the system eliminates that risk.",
+    "Semáforo de prazo:":"Deadline indicator:",
+    "🔴 <2 dias · 🟡 2–5 dias · 🟢 >5 dias — calculado por status automaticamente":"🔴 <2 days · 🟡 2–5 days · 🟢 >5 days — computed automatically by status",
+    "KPIs em tempo real:":"Real-time KPIs:",
+    "win rate, valor em aberto, docs pendentes, casos em análise":"win rate, open amount, pending docs, cases under review",
+    "Rastreamento por TID:":"Tracking by TID:",
+    "ID único da transação na adquirente como chave de auditoria imutável":"the acquirer's unique transaction ID as an immutable audit key",
+    "Agrupamento por e-mail:":"Grouping by email:",
+    "múltiplos contratos do mesmo cliente unificados na tela":"multiple contracts from the same customer unified on screen",
+    "Ciclo de Vida da Disputa":"Dispute Lifecycle",
+    "Solicitação":"Request","Importado do CRM":"Imported from CRM",
+    "Em análise":"Under review","Semáforo de prazo ativo":"Deadline indicator active",
+    "Aguardando documentos":"Awaiting documents",
+    "Reapresentado":"Re-presented","Aguardando emissor":"Awaiting issuer",
+    "Resolução":"Resolution","Disputa ganha":"Dispute won","Disputa perdida":"Dispute lost",
+    // MODULE 03
+    "📞 Módulo 03 — 3ª Cobrança e Régua":"📞 Module 03 — 3rd Collection & Cadence",
+    "Régua de Recuperação Inteligente":"Smart Recovery Cadence",
+    "Gerencia inadimplentes na janela crítica pré-jurídica. Régua de cobrança escalonada, com etapas calculadas dinamicamente. Agrupamento anti-cartesiano por documento. Trilha de auditoria":"Manages delinquent accounts in the critical pre-legal window. A tiered collections cadence with dynamically computed stages. Anti-cartesian grouping by document. Append-only audit trail via",
+    "append-only — cada ação é imutável.":"— every action is immutable.",
+    "Régua escalonada:":"Tiered cadence:",
+    "etapa atual de cada caso calculada dinamicamente em tempo real":"each case's current stage computed dynamically in real time",
+    "Agrupamento por CPF:":"Grouping by tax ID:",
+    "múltiplos contratos unificados — ações via":"multiple contracts unified — actions via",
+    "atômico em todos":"atomic across all",
+    "Ficha 360°:":"360° Profile:",
+    "timeline completa do aluno via Cloud Function com 16+ tipos de evento categorizados":"full student timeline via Cloud Function with 16+ categorized event types",
+    "Encaminhamento jurídico:":"Legal handoff:",
+    "migração com metadados de transferência completos e log imutável":"migration with full transfer metadata and an immutable log",
+    "Régua de Cobrança · Escalonada":"Collections Cadence · Tiered",
+    "Vencimento":"Due date","Marco inicial":"Starting point",
+    "Notificação automática":"Automatic notification","Disparo inicial":"Initial dispatch",
+    "Lembrete":"Reminder","Reforço configurável":"Configurable follow-up",
+    "Cobrança ativa":"Active collection","Contato direto":"Direct contact",
+    "Escalonamento":"Escalation","Casos persistentes":"Persistent cases",
+    "Encaminhamento jurídico":"Legal handoff","Migração automática":"Automatic migration",
+    // MODULE 04
+    "📅 Módulo 04 — Operações e Escala":"📅 Module 04 — Operations & Scheduling",
+    "Gestão de Equipe e Automação":"Team Management & Automation",
+    "Escala com ciclo rotativo e regras de jornada variável. Módulo de automação de disparos com motor de regras dinâmico integrando plataformas de mensageria e automação de marketing com controle de rate limiting em batches.":"Scheduling with a rotating cycle and variable-shift rules. A dispatch-automation module with a dynamic rules engine integrating messaging and marketing-automation platforms, with batch rate-limiting control.",
+    "Plantão do dia:":"On-call of the day:",
+    "card fixo mostrando responsável em tempo real via documento de configuração no Firestore":"a fixed card showing who's on duty in real time via a config document in Firestore",
+    "Automação multi-canal:":"Multi-channel automation:",
+    "mensageria + automação de marketing com múltiplos estágios de comunicação orquestrados por Cloud Functions agendadas":"messaging + marketing automation with multiple communication stages orchestrated by scheduled Cloud Functions",
+    "Relatórios temporais:":"Time-based reports:",
+    "granularidade dinâmica (mês/dia/intervalo) com Chart.js e ApexCharts":"dynamic granularity (month/day/range) with Chart.js and ApexCharts",
+    "Parcerias financeiras:":"Financial partnerships:",
+    "contratos com NF-e/NFS-e, agrupamento por lote e cálculo automático de inadimplência":"invoiced contracts (NF-e/NFS-e), batch grouping and automatic delinquency calculation",
+    "Motor de Disparo Multicanal":"Multi-channel Dispatch Engine",
+    "Etapa da régua atingida":"Cadence stage reached",
+    "Filtra elegíveis":"Filter eligible","Higienização anti-duplicata":"Anti-duplicate cleansing",
+    "Rate limit por lote":"Per-batch rate limit",
+    "Disparo multicanal":"Multi-channel dispatch","Mensageria + marketing":"Messaging + marketing",
+    "Log atômico":"Atomic log",
+    // MODMAP
+    "Arquitetura Modular":"Modular Architecture","Mapa Completo do Sistema":"Full System Map",
+    "31 módulos organizados em 5 setores com controle de acesso (RBAC) por papel e setor":"31 modules across 5 sectors with role- and sector-based access control (RBAC)",
+    "Estratégico":"Strategic","4 módulos · acesso diretoria":"4 modules · executive access",
+    "Dashboard Executivo":"Executive Dashboard",
+    "KPIs semanais, formas de pagamento e métricas em tempo real (ApexCharts)":"Weekly KPIs, payment methods and real-time metrics (ApexCharts)",
+    "Disputas multi-adquirente com sincronização do CRM e gestão de prazo":"Multi-acquirer disputes with CRM sync and deadline management",
+    "Relatórios":"Reports","Mensal, temporal e por curso — lançamento por etapa e gráficos":"Monthly, time-based and per-course — stage entry and charts",
+    "Parcerias B2B":"B2B Partnerships",
+    "Gestão de alunos e contratos (NF-e/NFS-e · IRRF/PIS/COFINS/CSLL)":"Student and contract management (NF-e/NFS-e · IRRF/PIS/COFINS/CSLL)",
+    "5 módulos · operação core":"5 modules · core operation",
+    "Ficha 360°":"360° Profile","Drawer CRM read-only: resumo, faturas e timeline via Cloud Function":"Read-only CRM drawer: summary, invoices and timeline via Cloud Function",
+    "Agendamentos":"Scheduling","Novo, calendário e histórico de links de pagamento":"New, calendar and history of payment links",
+    "3ª Cobrança":"3rd Collection","Fila de ligações com agrupamento por aluno e régua escalonada":"Call queue grouped by student with a tiered cadence",
+    "1ª Jurídica":"1st Legal","Fila de ligações da etapa jurídica com status":"Legal-stage call queue with status",
+    "Cancelamentos":"Cancellations","Verificação em dupla checagem (supervisor + atendente)":"Double-check verification (supervisor + agent)",
+    "Gestão de Equipe":"Team Management","4 módulos · operação interna":"4 modules · internal operation",
+    "Gerenciar Equipe":"Manage Team","CRUD de usuários, papéis e permissões (Cloud Function admin)":"User, role and permission CRUD (admin Cloud Function)",
+    "Escala Mensal":"Monthly Schedule","Grade de turnos por colaborador com integração de feriados":"Per-employee shift grid with holiday integration",
+    "Férias":"Vacations","Workflow solicitar → aprovar → concluir com trilha de auditoria":"Request → approve → complete workflow with audit trail",
+    "Minhas Tarefas":"My Tasks","Gestor pessoal com matriz de Eisenhower e visão de time":"Personal manager with an Eisenhower matrix and team view",
+    "Jurídico":"Legal","2 módulos · acesso restrito":"2 modules · restricted access",
+    "Gestão Jurídica":"Legal Management","Acompanhamento de processos com status Ativo → Encerrado e operações em lote":"Case tracking with Active → Closed status and bulk operations",
+    "Agendamentos Jurídicos":"Legal Scheduling","Novo, calendário e histórico de agendamentos jurídicos":"New, calendar and history of legal appointments",
+    "Disparos & Automação":"Dispatch & Automation","4 módulos · motor de comunicação":"4 modules · communication engine",
+    "Registros Diários":"Daily Records","Calendário de registros diários de inadimplência":"Calendar of daily delinquency records",
+    "Central de Automação":"Automation Hub","Mapeamento na automação de marketing com múltiplas etapas de gatilho por e-mail":"Marketing-automation mapping with multiple email trigger stages",
+    "Inadimplência (Gateway)":"Delinquency (Gateway)","Fila do gateway de pagamento com CRUD, cálculo de datas e disparos":"Payment-gateway queue with CRUD, date calculation and dispatches",
+    "Diagnósticos":"Diagnostics","Logs categorizados: disparo, job, erro, resumo e sistema":"Categorized logs: dispatch, job, error, summary and system",
+    "Núcleo & Infraestrutura":"Core & Infrastructure","6 módulos · base da aplicação":"6 modules · application foundation",
+    "Google OAuth One Tap, RBAC por papel e setor com modo estrito":"Google OAuth One Tap, role/sector RBAC with strict mode",
+    "Firestore com cache persistente multi-aba e fallback em memória":"Firestore with multi-tab persistent cache and in-memory fallback",
+    "Roteamento de abas, lazy-loading de módulos e visibilidade por permissão":"Tab routing, module lazy-loading and permission-based visibility",
+    "Utils compartilhados":"Shared Utils","Debounce, datas BR/UTC, normalização e mapeamento de status":"Debounce, BR/UTC dates, normalization and status mapping",
+    // VISÃO TÉCNICA (both)
+    "Visão Técnica":"Technical Vision","Conceito":"Concept",
+    "Especialização em IA aplicada à Cobrança":"Specialization in AI Applied to Collections",
+    "Áreas que domino e a direção que enxergo para plataformas de recuperação de crédito — competências que trago para evoluir produtos do setor":"Areas I master and the direction I see for credit-recovery platforms — skills I bring to move sector products forward",
+    "Score Preditivo de Inadimplência":"Predictive Delinquency Score",
+    "Modelos estatísticos e de machine learning para prever risco de inadimplência e priorizar a carteira de forma orientada por dados.":"Statistical and machine-learning models to predict delinquency risk and prioritize the portfolio in a data-driven way.",
+    "📊 Estatística / ML":"📊 Statistics / ML",
+    "Geração de Documentos com IA":"AI Document Generation",
+    "IA adaptativa para gerar minutas e documentos de contestação, ajustando o argumento ao contexto e ao tipo de caso, com revisão humana.":"Adaptive AI to generate drafts and dispute documents, tailoring the argument to the context and case type, with human review.",
+    "🤖 IA Adaptativa":"🤖 Adaptive AI",
+    "Renegociação Assistida por IA":"AI-Assisted Renegotiation",
+    "Propostas de acordo personalizadas a partir do perfil de risco — sugerindo desconto e parcelamento ideais para maximizar a recuperação.":"Personalized settlement offers based on risk profile — suggesting ideal discounts and installments to maximize recovery.",
+    "🤝 IA de Decisão":"🤝 Decision AI",
+    "Automação de Workflows":"Workflow Automation",
+    "Orquestração de etapas operacionais e jurídicas com motores de regras, reduzindo trabalho manual repetitivo sem abrir mão do controle humano.":"Orchestration of operational and legal steps with rules engines, cutting repetitive manual work without giving up human control.",
+    "⚙️ Orquestração":"⚙️ Orchestration",
+    "Destaque IA · 01":"AI Highlight · 01","Destaque IA · 02":"AI Highlight · 02",
+    "Score de Inadimplência → Renegociação Personalizada":"Delinquency Score → Personalized Renegotiation",
+    "Da leitura do histórico à proposta ideal de desconto e parcelamento, calculada por perfil de risco":"From reading the history to the ideal discount-and-installment offer, computed per risk profile",
+    "Histórico":"History","Dados transacionais":"Transactional data",
+    "Análise estatística":"Statistical analysis","Modelo de risco":"Risk model",
+    "Score de risco":"Risk score","Escala 0–1000":"0–1000 scale",
+    "IA de proposta":"Proposal AI","Desconto + parcelas":"Discount + installments",
+    "Renegociação":"Renegotiation","Oferta personalizada":"Personalized offer",
+    "Gerador Inteligente de Contestação de Chargeback":"Intelligent Chargeback Dispute Generator",
+    "IA adaptativa que monta a minuta de defesa conforme o contexto, com revisão humana antes do envio":"Adaptive AI that assembles the defense draft based on context, with human review before submission",
+    "Caso de chargeback":"Chargeback case","Evidências + TID":"Evidence + TID",
+    "IA analisa":"AI analyzes","Histórico + provas":"History + evidence",
+    "Gera minuta":"Generates draft","Adaptada ao contexto":"Context-adapted",
+    "Revisão humana":"Human review","Ajuste final":"Final adjustment",
+    "Submissão":"Submission","Envio à adquirente":"Sent to acquirer",
+    // SYSTEM 02 CX
+    "Plataforma de operações para equipes de Customer Experience — gerenciamento de escalas (3 setores, 5 cidades), automação de onboarding via WhatsApp integrando CRM + plataforma de mensageria, férias com Gantt e trilha de auditoria completa.":"An operations platform for Customer Experience teams — schedule management (3 sectors, 5 cities), WhatsApp onboarding automation integrating CRM + messaging platform, Gantt-based vacations and a full audit trail.",
+    "11 módulos JS":"11 JS modules","3.121 linhas CSS":"3,121 CSS lines","~12k linhas total":"~12k lines total",
+    "Gestão de Escalas — 3 Setores":"Schedule Management — 3 Sectors",
+    "Suporte (4 equipes), SA — Sucesso do Aluno (3 equipes) e Concierge (5 cidades: Recife, BH, Salvador, Curitiba, SP). Cada tipo com regras de turno, rodízio de FDS e injeção dinâmica de concierge nas escalas principais.":"Support (4 teams), SA — Student Success (3 teams) and Concierge (5 cities: Recife, BH, Salvador, Curitiba, SP). Each type with shift rules, weekend rotation and dynamic concierge injection into the main schedules.",
+    "Publicação atômica":"Atomic publish","5 cidades":"5 cities",
+    "Editor com Drag-and-Drop":"Drag-and-Drop Editor",
+    "Chips nomeados arrastáveis entre células. Auto-save de rascunho a cada 3 segundos (debounced) em":"Named chips draggable between cells. Draft auto-save every 3 seconds (debounced) in",
+    ". Três modos de geração: Completa, Faltando e Anterior. Detector de conflito (mesmo nome em dois turnos no mesmo dia).":". Three generation modes: Full, Missing-only and Previous. Conflict detector (same name in two shifts on the same day).",
+    "Shift = copiar":"Shift = copy","writeBatch atômico":"atomic writeBatch",
+    "Férias com Gantt Visual":"Vacations with Visual Gantt",
+    "Workflow de aprovação completo: solicitado → aguardando → aprovado → concluído. Gantt Chart mensal com 12 cores rotativas e lógica de carry-over para férias que atravessam meses. Integração automática com as escalas — dias aprovados aparecem na grade.":"Full approval workflow: requested → pending → approved → completed. Monthly Gantt chart with 12 rotating colors and carry-over logic for vacations spanning months. Automatic integration with the schedules — approved days show on the grid.",
+    "Gantt nativo CSS":"Native CSS Gantt","4 status flow":"4-status flow",
+    "Feriados — Total e Parcial":"Holidays — Full and Partial",
+    "Dois tipos: total (todos folga) e parcial (setores específicos trabalham com horário definido). Feriados parciais mostram tooltip nas escalas indicando quem trabalha e qual horário. Integração direta com a automação de WhatsApp — disparos são bloqueados em feriados.":"Two types: full (everyone off) and partial (specific sectors work set hours). Partial holidays show a tooltip on the schedules indicating who works and when. Directly integrated with WhatsApp automation — dispatches are blocked on holidays.",
+    "Tipo total / parcial":"Full / partial type","Bloqueia automação":"Blocks automation","Tooltip por setor":"Per-sector tooltip",
+    "RBAC Granular + Trilha de Auditoria":"Granular RBAC + Audit Trail",
+    "3 papéis (superadmin, admin, user) com permissões granulares no array":"3 roles (superadmin, admin, user) with granular permissions in the array",
+    ". Toda ação sensível é logada em":". Every sensitive action is logged in",
+    "com timestamp server-side, email e detalhes. Logout automático por inatividade (20 min).":"with a server-side timestamp, email and details. Automatic logout on inactivity (20 min).",
+    "20+ actions auditadas":"20+ audited actions",
+    "Minha Escala — Calendário Pessoal":"My Schedule — Personal Calendar",
+    "Cada colaborador vê seu próprio calendário mensal com turno e horário por dia. Cores por turno: 🟠 Manhã / 🟢 Intermediário / 🔵 Tarde / 🟣 Noite. Feriados e nome do feriado exibidos inline. Agrega dados de múltiplos setores pelo":"Each employee sees their own monthly calendar with shift and hours per day. Colors by shift: 🟠 Morning / 🟢 Mid / 🔵 Afternoon / 🟣 Night. Holidays and their names shown inline. Aggregates data from multiple sectors via the user's",
+    "do usuário.":".",
+    "Multi-setor merge":"Multi-sector merge","4 cores de turno":"4 shift colors",
+    "Automação":"Automation","Onboarding Automático via WhatsApp":"Automatic WhatsApp Onboarding",
+    "Cloud Function schedulada a cada 5 minutos — consulta o CRM via BigQuery, deduplica e dispara mensagens personalizadas via mensageria":"Cloud Function scheduled every 5 minutes — queries the CRM via BigQuery, deduplicates and sends personalized messages via messaging",
+    "Filtrar":"Filter","Pago hoje + ativo":"Paid today + active",
+    "Deduplica":"Deduplicate","Mensageria":"Messaging","Check fila ativa":"Check active queue",
+    "Disparo":"Dispatch","Template WhatsApp":"WhatsApp template",
+    "Especialização em Automação & CX":"Specialization in Automation & CX",
+    "Áreas que domino e a direção que enxergo para plataformas de Customer Experience — competências que trago para evoluir produtos do setor":"Areas I master and the direction I see for Customer Experience platforms — skills I bring to move sector products forward",
+    "Construtor Visual de Automações":"Visual Automation Builder",
+    "Réguas de comunicação personalizadas e 100% editáveis, com editor visual de fluxos no estilo n8n — gatilhos, condições, esperas e ações montados sem escrever código.":"Personalized, 100% editable communication cadences with an n8n-style visual flow editor — triggers, conditions, waits and actions assembled without writing code.",
+    "Pesquisas Win/Loss Automatizadas":"Automated Win/Loss Surveys",
+    "Disparo automático de pesquisas por evento (ganho ou perda do cliente), com categorização do motivo raiz e insights de retenção orientados por dados.":"Automatic survey dispatch by event (customer won or lost), with root-cause categorization and data-driven retention insights.",
+    "📊 Análise de Retenção":"📊 Retention Analytics",
+    "Destaque · 01":"Highlight · 01","Destaque · 02":"Highlight · 02",
+    "Construtor de Régua de Onboarding (estilo n8n)":"Onboarding Cadence Builder (n8n-style)",
+    "Editor visual de nós encadeáveis — cada etapa configurável e ramificável, sem escrever código":"Visual editor of chainable nodes — each step configurable and branchable, no code required",
+    "Gatilho":"Trigger","Matrícula / evento":"Enrollment / event",
+    "Condição":"Condition","Segmenta o aluno":"Segments the student",
+    "Ação":"Action","Mensagem / e-mail":"Message / email",
+    "Espera":"Wait","Delay configurável":"Configurable delay",
+    "Ramificação":"Branch","Próximo nó":"Next node",
+    "Pesquisa Win/Loss Automática":"Automatic Win/Loss Survey",
+    "Do evento de ganho/perda ao insight de retenção, com categorização automática do motivo":"From the win/loss event to the retention insight, with automatic reason categorization",
+    "Evento":"Event","Ganho ou perda":"Won or lost",
+    "Dispara pesquisa":"Send survey","Canal automático":"Automatic channel",
+    "Coleta resposta":"Collect response","Categoriza":"Categorize","Motivo raiz":"Root cause",
+    "Dashboard de retenção":"Retention dashboard",
+    // ENGINEERING
+    "Desafios Técnicos Superados":"Technical Challenges Solved",
+    "Os problemas mais complexos de ambos os sistemas — com as soluções de arquitetura que os resolvem":"The most complex problems across both systems — with the architecture solutions that solve them",
+    "Ambos":"Both","O Problema":"The Problem","A Solução":"The Solution",
+    "Produto Cartesiano no CRM":"Cartesian Product in the CRM",
+    "Um aluno com 3 contratos no CRM aparecia com 3× o valor real de débito em JOINs ingênuos — tornando os números de inadimplência completamente imprecisos para a diretoria.":"A student with 3 contracts in the CRM showed 3× their actual debt in naive JOINs — making delinquency figures completely inaccurate for leadership.",
+    "Deduplicação em dois níveis: ROW_NUMBER no BigQuery antes de agregar, e agrupamento em memória no front-end antes de qualquer renderização de KPI.":"Two-level deduplication: ROW_NUMBER in BigQuery before aggregating, and in-memory grouping on the front-end before any KPI render.",
+    "Consistência Financeira Centavo a Centavo":"Cent-by-Cent Financial Consistency",
+    "Firestore tem consistência eventual. Dois operadores atualizando o mesmo registro de dívida simultaneamente poderia resultar em dados corrompidos — inaceitável em contexto financeiro.":"Firestore has eventual consistency. Two operators updating the same debt record at once could corrupt data — unacceptable in a financial context.",
+    "writeBatch() para atomicidade multi-documento, arrayUnion() para trilha append-only, IDs determinísticos para idempotência em reimportações e serverTimestamp() em todos os campos de data.":"writeBatch() for multi-document atomicity, arrayUnion() for an append-only trail, deterministic IDs for idempotency on re-imports, and serverTimestamp() on every date field.",
+    "BigQuery Analítico sem Latência de Leitura":"Analytical BigQuery Without Read Latency",
+    "Consultar BigQuery diretamente a cada acesso ao dashboard seria lento (2–5s por query) e caro. Inviável para uma diretoria que precisa de dados instantâneos.":"Querying BigQuery directly on every dashboard load would be slow (2–5s per query) and costly. Unfeasible for leadership that needs instant data.",
+    "Padrão CQRS simplificado: Cloud Functions executam queries pesadas 1×/dia e materializam o resultado no Firestore. Front-end lê sempre documentos já prontos — latência <100ms.":"Simplified CQRS pattern: Cloud Functions run heavy queries once a day and materialize the result into Firestore. The front-end always reads ready-made documents — <100ms latency.",
+    "Deduplicação de WhatsApp em Escala":"WhatsApp Deduplication at Scale",
+    "Com a Cloud Function disparando a cada 5 minutos, o mesmo aluno recém-matriculado poderia receber a mensagem de onboarding múltiplas vezes — deteriorando a experiência do cliente.":"With the Cloud Function firing every 5 minutes, the same newly enrolled student could get the onboarding message several times — degrading the customer experience.",
+    "Coleção Firestore dedicada como guard de idempotência. Antes de qualquer disparo, consulta uma coleção-guard pelo ID do destinatário. Se existir, pula. Se não existir, dispara e registra atomicamente.":"A dedicated Firestore collection as an idempotency guard. Before any dispatch, it checks a guard collection by the recipient's ID. If it exists, skip. If not, dispatch and record atomically.",
+    "Régua com DST e Calendário de Feriados":"Cadence with DST and Holiday Calendar",
+    "Calcular as etapas da régua em produção exige respeitar o horário de Brasília (DST), pular fins de semana e ignorar feriados cadastrados — garantindo que cada ação caia sempre em dia útil.":"Computing cadence stages in production means respecting Brasília time (DST), skipping weekends and ignoring registered holidays — ensuring every action always lands on a business day.",
+    "Toda aritmética de datas forçada em America/Sao_Paulo via Intl. Feriados consultados por documento Firestore indexado por data ISO. Push automático para o próximo dia útil.":"All date arithmetic forced to America/Sao_Paulo via Intl. Holidays looked up from a Firestore document indexed by ISO date. Automatic push to the next business day.",
+    "Modelo de Dados Flat para Escalas":"Flat Data Model for Schedules",
+    "Escalas têm estrutura matricial (pessoa × dia × turno) que em Firestore resultaria em arrays aninhados — gerando custos de leitura por documento aninhado e dificultando atualizações pontuais.":"Schedules have a matrix structure (person × day × shift) that in Firestore would become nested arrays — driving per-nested-document read costs and hindering targeted updates.",
+    "Modelo flat com chaves compostas: cell_YYYY-MM-DD_CARGO = nomes (slash-separated). Um único documento por mês por setor. Atualização pontual sem sobrescrever o documento inteiro via update() com campo específico.":"Flat model with composite keys: cell_YYYY-MM-DD_ROLE = names (slash-separated). One document per month per sector. Targeted updates without overwriting the whole document via update() on a specific field.",
+    // STACK
+    "Infraestrutura":"Infrastructure","Stack Tecnológica Unificada":"Unified Tech Stack",
+    "Ambos os sistemas compartilham a mesma infraestrutura Firebase — decisão que eliminou custo operacional de manter dois backends distintos":"Both systems share the same Firebase infrastructure — a decision that removed the operational cost of maintaining two separate backends",
+    "CSS3 Modular":"Modular CSS3","Dados & Analytics":"Data & Analytics",
+    "Exportação para nuvem":"Cloud export","Categorias de Integração":"Integration Categories",
+    "Mensageria (WhatsApp / SMS)":"Messaging (WhatsApp / SMS)","Automação de Marketing":"Marketing Automation",
+    "Gateways de Pagamento":"Payment Gateways","Múltiplas Adquirentes":"Multiple Acquirers",
+    // CONCLUSION + FOOTER
+    "Próximos Passos":"Next Steps","Vamos construir juntos?":"Let's build together?",
+    "Dois sistemas enterprise em produção — do zero, sozinho. Arquitetura serverless, integrações com CRM, gateways de pagamento e mensageria, dashboards analíticos e interfaces construídas para quem usa todos os dias.":"Two enterprise systems in production — from scratch, solo. Serverless architecture, CRM / payment-gateway / messaging integrations, analytical dashboards and interfaces built for the people who use them every day.",
+    "Início":"Home","Plataforma de Cobrança":"Collections Platform","Plataforma de CX":"CX Platform",
+    "Desenvolvido por":"Built by","· Plataformas de Cobrança & CX · 2025–2026":"· Collections & CX Platforms · 2025–2026"
+  };
+
+  var META = {
+    title: "João Chociai — Full-Stack Portfolio · Fintech & Cloud",
+    desc: "Two enterprise systems built from scratch for a large medical-education institution: a financial management and debt-recovery platform, and a Customer Experience operations platform. Firebase, BigQuery, and integrations with CRM, messaging and payment gateways."
+  };
+  var metaEl = document.querySelector('meta[name="description"]');
+  var PT_TITLE = document.title;
+  var PT_DESC = metaEl ? metaEl.getAttribute('content') : '';
+
+  // capture translatable text nodes (skip script/style + animated counters)
+  var nodes = [];
+  var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+    acceptNode: function(n){
+      var p = n.parentNode;
+      if(!p) return NodeFilter.FILTER_REJECT;
+      var tag = p.nodeName;
+      if(tag==='SCRIPT'||tag==='STYLE'||tag==='NOSCRIPT') return NodeFilter.FILTER_REJECT;
+      if(p.hasAttribute && p.hasAttribute('data-target')) return NodeFilter.FILTER_REJECT; // counters
+      if(!n.nodeValue || !n.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  var nd;
+  while((nd = walker.nextNode())){ nodes.push({ node: nd, orig: nd.nodeValue }); }
+
+  function apply(lang){
+    var en = (lang === 'en');
+    document.documentElement.lang = en ? 'en' : 'pt-BR';
+    for(var i=0;i<nodes.length;i++){
+      var raw = nodes[i].orig;
+      if(!en){ nodes[i].node.nodeValue = raw; continue; }
+      var m = raw.match(/^(\s*)([\s\S]*?)(\s*)$/);
+      var lead = m[1], core = m[2], trail = m[3];
+      var key = core.replace(/\s+/g,' ');
+      nodes[i].node.nodeValue = (key in D) ? (lead + D[key] + trail) : raw;
+    }
+    document.title = en ? META.title : PT_TITLE;
+    if(metaEl) metaEl.setAttribute('content', en ? META.desc : PT_DESC);
+    var btns = document.querySelectorAll('[data-lang-btn]');
+    for(var j=0;j<btns.length;j++){
+      btns[j].classList.toggle('active', btns[j].getAttribute('data-lang-btn') === lang);
+    }
+    try{ localStorage.setItem('lang', lang); }catch(e){}
+  }
+
+  var saved = null;
+  try{ saved = localStorage.getItem('lang'); }catch(e){}
+  var initial = saved || (((navigator.language||navigator.userLanguage||'').toLowerCase().indexOf('pt')===0) ? 'pt' : 'en');
+  apply(initial);
+
+  var btns = document.querySelectorAll('[data-lang-btn]');
+  for(var k=0;k<btns.length;k++){
+    btns[k].addEventListener('click', function(){ apply(this.getAttribute('data-lang-btn')); });
+  }
+})();
+</script>
+</body>
+</html>
